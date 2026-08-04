@@ -104,14 +104,33 @@ p, li, span, label {{
     color: #EA580C !important;
     font-weight: 700 !important;
 }}
-.stMetric {{
+/* Force Principle Font everywhere */
+* {{
+    font-family: var(--font-main) !important;
+}}
+
+/* 3D Shadows & Rounded Corners for Cards and Charts */
+.stMetric, [data-testid="stMetric"] {{
     background-color: var(--card-bg) !important;
     padding: 20px !important;
     border-radius: 16px !important;
-    border: none !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
-    border-left: 4px solid var(--accent) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    border: 1px solid var(--border) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }}
+.stMetric:hover, [data-testid="stMetric"]:hover {{
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+}}
+
+.stPlotlyChart, .stVegaLiteChart, [data-testid="stDataFrame"] {{
+    background-color: var(--card-bg) !important;
+    border-radius: 16px !important;
+    padding: 10px !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    border: 1px solid var(--border) !important;
+}}
+
 .stMetric label {{
     color: var(--text-muted) !important;
     font-size: 0.95rem !important;
@@ -206,6 +225,12 @@ p, li, span, label {{
     <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
     <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
     <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing&ouid=109163273083599607293&rtpof=true&sd=true" class="gdrive-btn" target="_blank">💾 Master Data</a>
+    <form method="GET" style="display:inline-block; margin-left: 10px;">
+        <input type="hidden" name="nav" value="{current_nav}">
+        <input type="hidden" name="theme" value="{theme}">
+        <input type="hidden" name="splash" value="0">
+        <input type="text" name="search" placeholder="Search items, data..." style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: var(--font-main); outline: none; width: 180px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+    </form>
 </div>
 """, unsafe_allow_html=True)
 
@@ -384,9 +409,53 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════
-# EXECUTIVE SUMMARY
+# ROUTING & SEARCH LOGIC
 # ══════════════════════════════════════════════════════════════════
-if nav == "executive":
+search_query = st.query_params.get("search", "").strip()
+
+if search_query:
+    st.header(f"🔎 Global Search Results for '{search_query}'")
+    search_lower = search_query.lower()
+    st.markdown(f"Searching across Institutions, Doctor Specialties, and Lab Departments...")
+    
+    c1, c2, c3 = st.columns(3)
+    
+    inst_matches = df[df['institution_name'].str.lower().str.contains(search_lower, na=False)]['institution_name'].unique()
+    with c1:
+        with st.expander(f"🏢 Institutions ({len(inst_matches)})", expanded=True):
+            if len(inst_matches) > 0:
+                st.dataframe(pd.DataFrame({"Matching Institutions": inst_matches}), use_container_width=True)
+            else:
+                st.info("No matches.")
+                
+    spec_matches = df[df['doctor_specialty'].str.lower().str.contains(search_lower, na=False)]['doctor_specialty'].unique()
+    with c2:
+        with st.expander(f"👨‍⚕️ Specialties ({len(spec_matches)})", expanded=True):
+            if len(spec_matches) > 0:
+                st.dataframe(pd.DataFrame({"Matching Specialties": spec_matches}), use_container_width=True)
+            else:
+                st.info("No matches.")
+                
+    dept_matches = df[df['department'].str.lower().str.contains(search_lower, na=False)]['department'].unique()
+    with c3:
+        with st.expander(f"🧪 Departments ({len(dept_matches)})", expanded=True):
+            if len(dept_matches) > 0:
+                st.dataframe(pd.DataFrame({"Matching Departments": dept_matches}), use_container_width=True)
+            else:
+                st.info("No matches.")
+                
+    st.subheader("Raw Data Preview (First 100 rows)")
+    raw_matches = df[
+        df['institution_name'].str.lower().str.contains(search_lower, na=False) |
+        df['doctor_specialty'].str.lower().str.contains(search_lower, na=False) |
+        df['department'].str.lower().str.contains(search_lower, na=False)
+    ]
+    if not raw_matches.empty:
+        st.dataframe(raw_matches.head(100), use_container_width=True)
+    else:
+        st.warning("No data found.")
+
+elif nav == "executive":
     st.header("📈 Overall Performance & Department Split")
     
     total_rev = filtered_df['total_bill_amount'].sum()
