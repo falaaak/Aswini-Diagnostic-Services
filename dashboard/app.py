@@ -189,18 +189,12 @@ p, li, span, label {
 </div>
 """, unsafe_allow_html=True)
 
-if 'splash_shown_v2' not in st.session_state:
-    st.session_state.splash_shown_v2 = True
+if 'splash_shown_v3' not in st.session_state:
+    st.session_state.splash_shown_v3 = True
     try:
-        import base64
-        import os
-        img_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "purple_phoenix.jpg")
-        with open(img_path, "rb") as f:
-            phoenix_b64 = base64.b64encode(f.read()).decode()
-            
-        splash_html = f"""
+        splash_html = """
         <style>
-        .splash-overlay {{
+        .splash-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000000;
@@ -209,77 +203,56 @@ if 'splash_shown_v2' not in st.session_state:
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeOut 1.5s ease-in-out 7s forwards;
-        }}
-        .splash-phoenix {{
-            width: 350px;
-            height: 350px;
-            background-image: url(data:image/jpeg;base64,{phoenix_b64});
-            background-size: cover;
-            border-radius: 50%;
-            animation: rise 2.5s ease-out forwards, fadePhoenix 1.5s ease-in-out 3s forwards;
-            opacity: 0;
-            position: absolute;
-            box-shadow: 0 0 100px rgba(138,43,226,0.4);
-        }}
-        .splash-logo {{
+            animation: fadeOut 1.5s ease-in-out 4s forwards;
+        }
+        .splash-logo {
             width: 280px;
             opacity: 0;
             position: absolute;
-            animation: showLogo 1.5s ease-in-out 3.5s forwards;
-        }}
-        .splash-text-container {{
+            animation: showLogo 2s ease-in-out 0.5s forwards;
+        }
+        .splash-text-container {
             position: absolute;
             top: 65%;
             text-align: center;
             opacity: 0;
-            animation: showText 1.5s ease-in-out 5s forwards;
-        }}
-        .splash-text-container h1 {{
+            animation: showText 1.5s ease-in-out 1.5s forwards;
+        }
+        .splash-text-container h1 {
             color: #FFFFFF;
             font-family: var(--font-apple);
             font-size: 3rem;
             margin: 0 0 10px 0;
             font-weight: 300;
             letter-spacing: 1px;
-        }}
-        .splash-text-container p {{
-            color: #A78BFA; /* Soft purple */
+        }
+        .splash-text-container p {
+            color: #A78BFA;
             font-family: var(--font-apple);
             font-size: 1.2rem;
             margin: 0;
             letter-spacing: 3px;
-            animation: showSubText 1s ease-in-out 6s forwards;
+            animation: showSubText 1s ease-in-out 2.5s forwards;
             opacity: 0;
-        }}
-        @keyframes rise {{
-            0% {{ transform: translateY(150px) scale(0.7); opacity: 0; }}
-            30% {{ opacity: 1; }}
-            100% {{ transform: translateY(0) scale(1.1); opacity: 1; }}
-        }}
-        @keyframes fadePhoenix {{
-            0% {{ opacity: 1; transform: scale(1.1); }}
-            100% {{ opacity: 0; transform: scale(1.3); filter: blur(10px); }}
-        }}
-        @keyframes showLogo {{
-            0% {{ opacity: 0; transform: scale(0.8); }}
-            100% {{ opacity: 1; transform: scale(1); }}
-        }}
-        @keyframes showText {{
-            0% {{ opacity: 0; transform: translateY(20px); }}
-            100% {{ opacity: 1; transform: translateY(0); }}
-        }}
-        @keyframes showSubText {{
-            0% {{ opacity: 0; transform: translateY(10px); }}
-            100% {{ opacity: 1; transform: translateY(0); }}
-        }}
-        @keyframes fadeOut {{
-            0% {{ opacity: 1; visibility: visible; }}
-            100% {{ opacity: 0; visibility: hidden; pointer-events: none; }}
-        }}
+        }
+        @keyframes showLogo {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes showText {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes showSubText {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; pointer-events: none; }
+        }
         </style>
         <div class="splash-overlay">
-            <div class="splash-phoenix"></div>
             <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" class="splash-logo">
             <div class="splash-text-container">
                 <h1>ADS - B2B Analysis</h1>
