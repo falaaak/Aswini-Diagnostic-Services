@@ -189,89 +189,109 @@ p, li, span, label {
 </div>
 """, unsafe_allow_html=True)
 
-if 'splash_shown_v3' not in st.session_state:
-    st.session_state.splash_shown_v3 = True
-    try:
-        splash_html = """
-        <style>
-        .splash-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000000;
-            z-index: 999999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeOut 1.5s ease-in-out 4s forwards;
-        }
-        .splash-logo {
-            width: 280px;
-            opacity: 0;
-            position: absolute;
-            animation: showLogo 2s ease-in-out 0.5s forwards;
-        }
-        .splash-text-container {
-            position: absolute;
-            top: 65%;
-            text-align: center;
-            opacity: 0;
-            animation: showText 1.5s ease-in-out 1.5s forwards;
-        }
-        .splash-text-container h1 {
-            color: #FFFFFF;
-            font-family: var(--font-apple);
-            font-size: 3rem;
-            margin: 0 0 10px 0;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-        .splash-text-container p {
-            color: #A78BFA;
-            font-family: var(--font-apple);
-            font-size: 1.2rem;
-            margin: 0;
-            letter-spacing: 3px;
-            animation: showSubText 1s ease-in-out 2.5s forwards;
-            opacity: 0;
-        }
-        @keyframes showLogo {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes showText {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes showSubText {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; visibility: visible; }
-            100% { opacity: 0; visibility: hidden; pointer-events: none; }
-        }
-        </style>
-        <div class="splash-overlay">
-            <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" class="splash-logo">
-            <div class="splash-text-container">
-                <h1>ADS - B2B Analysis</h1>
-                <p>by Application Team</p>
+st.markdown("""
+<style>
+.stApp { opacity: 0; transition: opacity 0.5s ease; }
+</style>
+""", unsafe_allow_html=True)
+
+splash_js = """
+<script>
+if (window.parent && window.parent.document) {
+    const parentDoc = window.parent.document;
+    if (!window.parent.sessionStorage.getItem('splashShown')) {
+        window.parent.sessionStorage.setItem('splashShown', 'true');
+        
+        const overlay = parentDoc.createElement('div');
+        overlay.innerHTML = `
+            <style>
+            .splash-overlay-native {
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: #000000;
+                z-index: 999999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                animation: fadeOutNative 1.5s ease-in-out 4s forwards;
+            }
+            .splash-logo-native {
+                width: 280px;
+                opacity: 0;
+                position: absolute;
+                animation: showLogoNative 2s ease-in-out 0.5s forwards;
+            }
+            .splash-text-native {
+                position: absolute;
+                top: 65%;
+                text-align: center;
+                opacity: 0;
+                animation: showTextNative 1.5s ease-in-out 1.5s forwards;
+            }
+            .splash-text-native h1 {
+                color: #FFFFFF;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                font-size: 3rem;
+                margin: 0 0 10px 0;
+                font-weight: 300;
+                letter-spacing: 1px;
+            }
+            .splash-text-native p {
+                color: #A78BFA;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                font-size: 1.2rem;
+                margin: 0;
+                letter-spacing: 3px;
+                animation: showSubTextNative 1s ease-in-out 2.5s forwards;
+                opacity: 0;
+            }
+            @keyframes showLogoNative {
+                0% { opacity: 0; transform: scale(0.8); }
+                100% { opacity: 1; transform: scale(1); }
+            }
+            @keyframes showTextNative {
+                0% { opacity: 0; transform: translateY(20px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes showSubTextNative {
+                0% { opacity: 0; transform: translateY(10px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes fadeOutNative {
+                0% { opacity: 1; visibility: visible; }
+                100% { opacity: 0; visibility: hidden; pointer-events: none; }
+            }
+            </style>
+            <div class="splash-overlay-native">
+                <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" class="splash-logo-native">
+                <div class="splash-text-native">
+                    <h1>ADS - B2B Analysis</h1>
+                    <p>by Application Team</p>
+                </div>
             </div>
-        </div>
-        """
-        st.markdown(splash_html, unsafe_allow_html=True)
-        components.html("""
-        <script>
+        `;
+        parentDoc.body.appendChild(overlay);
+        
         setTimeout(() => {
-            if (window.parent && window.parent.window.playIntroSound) {
+            if (window.parent.window.playIntroSound) {
                 window.parent.window.playIntroSound();
             }
         }, 500);
-        </script>
-        """, height=0, width=0)
-    except Exception as e:
-        pass
+        
+        setTimeout(() => {
+            const app = parentDoc.querySelector('.stApp');
+            if (app) app.style.opacity = '1';
+            setTimeout(() => { overlay.remove(); }, 1500);
+        }, 4000);
+    } else {
+        const app = parentDoc.querySelector('.stApp');
+        if (app) app.style.opacity = '1';
+    }
+}
+</script>
+"""
+components.html(splash_js, height=0, width=0)
 
 # ══════════════════════════════════════════════════════════════════
 # DATA LOADING & PREPROCESSING
