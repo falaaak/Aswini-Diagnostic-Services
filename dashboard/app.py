@@ -179,9 +179,9 @@ p, li, span, label {
 }
 </style>
 <div class="liquid-nav">
-    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height: 50px; margin-right: 20px;">
     <a href="?nav=matrix&splash=0">📊 B2B Matrix</a>
     <a href="?nav=executive&splash=0">📈 Executive Summary</a>
+    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height: 50px; margin: 0 15px;">
     <a href="?nav=forecast&splash=0">🔮 Forecast</a>
     <a href="?nav=team&splash=0">👨‍💻 Application Team</a>
     <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing&ouid=109163273083599607293&rtpof=true&sd=true" class="gdrive-btn" target="_blank">💾 Master Data</a>
