@@ -4,9 +4,16 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 
+theme = st.query_params.get("theme", "light")
+if theme not in ["light", "dark"]:
+    theme = "light"
+opposite_theme = "dark" if theme == "light" else "light"
+theme_icon = "🌙 Dark Mode" if theme == "light" else "☀️ Light Mode"
+
 # Define Ronas IT Logistics Theme for all charts
 RONAS_COLORS = ["#10B981", "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899", "#F43F5E", "#F59E0B", "#14B8A6"]
-pio.templates["ronas"] = go.layout.Template(
+
+pio.templates["ronas_light"] = go.layout.Template(
     layout=go.Layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -14,7 +21,18 @@ pio.templates["ronas"] = go.layout.Template(
         colorway=RONAS_COLORS
     )
 )
-pio.templates.default = "ronas"
+
+pio.templates["ronas_dark"] = go.layout.Template(
+    layout=go.Layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#9CA3AF", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif'),
+        colorway=RONAS_COLORS
+    )
+)
+
+pio.templates.default = f"ronas_{theme}"
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
@@ -24,17 +42,10 @@ import os
 
 st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
 
-st.markdown("""
-<style>
-/* Hide the default streamlit header */
-[data-testid="stHeader"] {
-    display: none;
-}
-/* Push the main app content down */
-[data-testid="stAppViewBlockContainer"] {
-    margin-top: 90px;
-}
-:root{
+current_nav = st.query_params.get("nav", "matrix")
+
+if theme == "light":
+    css_vars = """
   --app-bg: #F4F7FE;
   --card-bg: #FFFFFF;
   --text-main: #111827;
@@ -42,60 +53,90 @@ st.markdown("""
   --accent: #10B981;
   --accent-hover: #059669;
   --border: #E5E7EB;
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-border: rgba(255, 255, 255, 0.5);
+  --nav-hover-bg: rgba(16, 185, 129, 0.1);
+"""
+else:
+    css_vars = """
+  --app-bg: #111315;
+  --card-bg: #1A1D21;
+  --text-main: #FFFFFF;
+  --text-muted: #9CA3AF;
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --border: #2D3748;
+  --nav-bg: rgba(26, 29, 33, 0.75);
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --nav-hover-bg: rgba(16, 185, 129, 0.2);
+"""
+
+st.markdown(f"""
+<style>
+/* Hide the default streamlit header */
+[data-testid="stHeader"] {{
+    display: none;
+}}
+/* Push the main app content down */
+[data-testid="stAppViewBlockContainer"] {{
+    margin-top: 90px;
+}}
+:root{{
+{css_vars}
   --font-main: "Glogmy", Copperplate, "SF Pro Display", sans-serif;
-}
-.stApp {
+}}
+.stApp {{
     background-color: var(--app-bg) !important;
     color: var(--text-main) !important;
     font-family: var(--font-main);
-}
-h1, h2, h3, h4, h5, h6 {
+}}
+h1, h2, h3, h4, h5, h6 {{
     color: var(--text-main) !important;
     font-family: var(--font-main) !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em;
-}
-p, li, span, label {
+}}
+p, li, span, label {{
     color: var(--text-main);
     font-family: var(--font-main);
-}
-.stMetric {
+}}
+.stMetric {{
     background-color: var(--card-bg) !important;
     padding: 20px !important;
     border-radius: 16px !important;
     border: none !important;
     box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
     border-left: 4px solid var(--accent) !important;
-}
-.stMetric label {
+}}
+.stMetric label {{
     color: var(--text-muted) !important;
     font-size: 0.95rem !important;
     font-weight: 500 !important;
-}
-.stMetric [data-testid="stMetricValue"] {
+}}
+.stMetric [data-testid="stMetricValue"] {{
     color: var(--text-main) !important;
     font-family: var(--font-main) !important;
     font-weight: 800 !important;
-}
+}}
 /* The Liquid Glass Navbar */
-.liquid-nav {
+.liquid-nav {{
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(255, 255, 255, 0.75);
+    background: var(--nav-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid var(--nav-border);
     z-index: 999999;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
-}
-.liquid-nav a {
+}}
+.liquid-nav a {{
     text-decoration: none;
     color: var(--text-muted);
     font-weight: 600;
@@ -104,61 +145,62 @@ p, li, span, label {
     border-radius: 8px;
     transition: all 0.3s ease;
     font-family: var(--font-main);
-}
-.liquid-nav a:hover {
+}}
+.liquid-nav a:hover {{
     color: var(--accent) !important;
-    background: rgba(16, 185, 129, 0.1);
-}
-.nav-center {
+    background: var(--nav-hover-bg);
+}}
+.nav-center {{
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 0 15px;
-}
-.nav-center img {
+}}
+.nav-center img {{
     height: 45px;
     object-fit: contain;
-}
-.gdrive-btn {
+}}
+.gdrive-btn {{
     background: var(--accent) !important;
     color: white !important;
     padding: 8px 20px !important;
     border-radius: 30px !important;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
     border: none !important;
-}
-.gdrive-btn:hover {
+}}
+.gdrive-btn:hover {{
     background: var(--accent-hover) !important;
     transform: translateY(-2px);
-}
+}}
 /* Style Streamlit Tabs to look like modern pills */
-[data-baseweb="tab-list"] {
+[data-baseweb="tab-list"] {{
     gap: 10px;
     background-color: var(--card-bg);
     padding: 10px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-}
-[data-baseweb="tab"] {
+}}
+[data-baseweb="tab"] {{
     background-color: transparent !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 10px 20px !important;
     color: var(--text-muted) !important;
     font-weight: 600;
-}
-[aria-selected="true"] {
+}}
+[aria-selected="true"] {{
     background-color: var(--accent) !important;
     color: white !important;
-}
+}}
 </style>
 <div class="liquid-nav">
-    <a href="?nav=matrix&splash=0" target="_self">📊 B2B Matrix</a>
-    <a href="?nav=executive&splash=0" target="_self">📈 Executive Summary</a>
+    <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
+    <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
     <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height:40px; margin:0 15px;">
-    <a href="?nav=specialty&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
-    <a href="?nav=forecast&splash=0" target="_self">🔮 Forecast</a>
-    <a href="?nav=team&splash=0" target="_self">👨‍💻 Application Team</a>
+    <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
+    <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
+    <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
+    <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
     <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing&ouid=109163273083599607293&rtpof=true&sd=true" class="gdrive-btn" target="_blank">💾 Master Data</a>
 </div>
 """, unsafe_allow_html=True)
