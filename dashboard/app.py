@@ -369,12 +369,12 @@ top_institutions = inst_totals.nlargest(top_n, 'total_bill_amount')['institution
 top_df = filtered_df[filtered_df['institution_name'].isin(top_institutions)]
 
 st.markdown(f"""
-<div style="background-color: var(--offwhite); padding: 15px; border-radius: 12px; border-left: 6px solid var(--brown-500); margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--brown-900) !important; font-size: 1.5rem; font-family: var(--font-main);">
+<div style="background-color: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 6px solid #EA580C; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+    <h4 style="margin-top: 0; margin-bottom: 8px; color: #EA580C !important; font-size: 1.5rem; font-family: var(--font-main);">
         📅 <strong>Period:</strong> {start_month} to {end_month} &nbsp;|&nbsp; 🏢 <strong>Analyzing Top {top_n} Institutions</strong>
     </h4>
-    <p style="margin: 0; color: var(--brown-600) !important; font-weight: 500; font-size: 0.95rem; font-family: var(--font-main);">
-        ✨ <span style="background-color: #F8F4EE; padding: 2px 6px; border-radius: 4px;">Created by Application Team, Aswini Diagnostic Services</span>
+    <p style="margin: 0; color: var(--text-muted) !important; font-weight: 500; font-size: 0.95rem; font-family: var(--font-main);">
+        ✨ <span style="background-color: transparent; border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px;">Created by Application Team, Aswini Diagnostic Services</span>
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -744,27 +744,27 @@ elif nav == "team":
     
     with c1:
         st.markdown(f"""
-        <div style="background-color: var(--offwhite); padding: 25px; border-radius: 12px; border-top: 5px solid var(--aswini-blue); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
             <div style="font-size: 3rem; margin-bottom: 10px;">👔</div>
-            <h3 style="margin: 0; color: var(--aswini-dark) !important; font-size: 1.3rem;">Mr. Harikrishnan R</h3>
-            <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;">Application Manager</p>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Harikrishnan R</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Manager</p>
         </div>
         """, unsafe_allow_html=True)
         
     with c2:
         st.markdown(f"""
-        <div style="background-color: var(--offwhite); padding: 25px; border-radius: 12px; border-top: 5px solid var(--aswini-blue); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
             <div style="font-size: 3rem; margin-bottom: 10px;">💻</div>
-            <h3 style="margin: 0; color: var(--aswini-dark) !important; font-size: 1.3rem;">Mr. Mohammed Falah K</h3>
-            <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;">Application Specialist</p>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Mohammed Falah K</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
         </div>
         """, unsafe_allow_html=True)
         
     with c3:
         st.markdown(f"""
-        <div style="background-color: var(--offwhite); padding: 25px; border-radius: 12px; border-top: 5px solid var(--aswini-blue); text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
             <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
-            <h3 style="margin: 0; color: var(--aswini-dark) !important; font-size: 1.3rem;">Mr. Nidhin U K</h3>
-            <p style="color: var(--text-secondary); font-weight: 500; margin-top: 5px;">Application Specialist</p>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Nidhin U K</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
         </div>
         """, unsafe_allow_html=True)
