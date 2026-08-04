@@ -10,7 +10,7 @@ pio.templates["ronas"] = go.layout.Template(
     layout=go.Layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#6B7280", family=""Glogmy", "SF Pro Display", sans-serif"),
+        font=dict(color="#6B7280", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif'),
         colorway=RONAS_COLORS
     )
 )
@@ -42,7 +42,7 @@ st.markdown("""
   --accent: #10B981;
   --accent-hover: #059669;
   --border: #E5E7EB;
-  --font-main: "Glogmy", "SF Pro Display", sans-serif;
+  --font-main: "Glogmy", Copperplate, "SF Pro Display", sans-serif;
 }
 .stApp {
     background-color: var(--app-bg) !important;
