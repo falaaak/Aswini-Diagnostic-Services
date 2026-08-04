@@ -2,6 +2,19 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
+
+# Define Ronas IT Logistics Theme for all charts
+RONAS_COLORS = ["#10B981", "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899", "#F43F5E", "#F59E0B", "#14B8A6"]
+pio.templates["ronas"] = go.layout.Template(
+    layout=go.Layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        font=dict(color="#6B7280", family="-apple-system, SF Pro Display, sans-serif"),
+        colorway=RONAS_COLORS
+    )
+)
+pio.templates.default = "ronas"
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
@@ -70,51 +83,47 @@ st.markdown("""
     margin-top: 90px;
 }
 :root{
-  --brown-900:#4A3428;
-  --brown-700:#6C4A34;
-  --brown-600:#8B5E3C;
-  --brown-500:#A97852;
-  --brown-300:#C8A27C;
-  --cream:#F8F4EE;
-  --offwhite:#FCFAF7;
-  --beige:#F1E8DE;
-  --text:#1A1A1A;
-  --text-secondary:#4A4A4A;
-  --border:#DED4C7;
-  --aswini-blue: #0B6FB8;
-  --aswini-dark: #0A4E8A;
+  --app-bg: #F4F7FE;
+  --card-bg: #FFFFFF;
+  --text-main: #111827;
+  --text-muted: #6B7280;
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --border: #E5E7EB;
   --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 .stApp {
-    background-color: var(--cream);
-    color: var(--text) !important;
+    background-color: var(--app-bg) !important;
+    color: var(--text-main) !important;
     font-family: var(--font-apple);
 }
 h1, h2, h3, h4, h5, h6 {
-    color: var(--brown-900) !important;
+    color: var(--text-main) !important;
     font-family: var(--font-apple) !important;
     font-weight: 700 !important;
+    letter-spacing: -0.02em;
 }
 p, li, span, label {
-    color: var(--text);
+    color: var(--text-main);
     font-family: var(--font-apple);
 }
 .stMetric {
-    background-color: var(--offwhite) !important;
-    padding: 15px !important;
-    border-radius: 12px !important;
-    border-left: 5px solid var(--brown-600) !important;
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    background-color: var(--card-bg) !important;
+    padding: 20px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
+    border-left: 4px solid var(--accent) !important;
 }
 .stMetric label {
-    color: var(--text-secondary) !important;
-    font-size: 0.9rem !important;
+    color: var(--text-muted) !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
 }
 .stMetric [data-testid="stMetricValue"] {
-    color: var(--brown-900) !important;
+    color: var(--text-main) !important;
     font-family: var(--font-apple) !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
 }
 /* The Liquid Glass Navbar */
 .liquid-nav {
@@ -123,20 +132,20 @@ p, li, span, label {
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     z-index: 999999;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
 }
 .liquid-nav a {
     text-decoration: none;
-    color: var(--text);
+    color: var(--text-muted);
     font-weight: 600;
     font-size: 0.95rem;
     padding: 8px 12px;
@@ -145,10 +154,8 @@ p, li, span, label {
     font-family: var(--font-apple);
 }
 .liquid-nav a:hover {
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
-    color: #FFFFFF !important;
+    color: var(--accent) !important;
+    background: rgba(16, 185, 129, 0.1);
 }
 .nav-center {
     display: flex;
@@ -157,26 +164,40 @@ p, li, span, label {
     padding: 0 15px;
 }
 .nav-center img {
-    height: 55px;
+    height: 45px;
     object-fit: contain;
 }
 .gdrive-btn {
-    background: linear-gradient(135deg, var(--aswini-blue), var(--aswini-dark)) !important;
+    background: var(--accent) !important;
     color: white !important;
     padding: 8px 20px !important;
     border-radius: 30px !important;
-    box-shadow: 0 4px 15px rgba(11, 111, 184, 0.4) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    animation: pulse 2s infinite;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+    border: none !important;
 }
 .gdrive-btn:hover {
-    background: linear-gradient(135deg, var(--aswini-dark), #05325c) !important;
-    transform: scale(1.05);
+    background: var(--accent-hover) !important;
+    transform: translateY(-2px);
 }
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(11, 111, 184, 0.6); }
-    70% { box-shadow: 0 0 0 10px rgba(11, 111, 184, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(11, 111, 184, 0); }
+/* Style Streamlit Tabs to look like modern pills */
+[data-baseweb="tab-list"] {
+    gap: 10px;
+    background-color: var(--card-bg);
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+[data-baseweb="tab"] {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    color: var(--text-muted) !important;
+    font-weight: 600;
+}
+[aria-selected="true"] {
+    background-color: var(--accent) !important;
+    color: white !important;
 }
 </style>
 <div class="liquid-nav">
