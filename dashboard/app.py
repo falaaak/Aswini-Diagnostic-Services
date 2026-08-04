@@ -21,7 +21,11 @@ pio.templates["ronas_light"] = go.layout.Template(
     layout=go.Layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#6B7280", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif'),
+        font=dict(color="#6B7280", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif', size=15),
+        hoverlabel=dict(font_size=16),
+        xaxis=dict(title_font=dict(size=16), tickfont=dict(size=14)),
+        yaxis=dict(title_font=dict(size=16), tickfont=dict(size=14)),
+        legend=dict(font=dict(size=15)),
         colorway=RONAS_COLORS
     )
 )
@@ -30,7 +34,11 @@ pio.templates["ronas_dark"] = go.layout.Template(
     layout=go.Layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#9CA3AF", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif'),
+        font=dict(color="#9CA3AF", family='"Glogmy", Copperplate, "SF Pro Display", sans-serif', size=15),
+        hoverlabel=dict(font_size=16),
+        xaxis=dict(title_font=dict(size=16), tickfont=dict(size=14)),
+        yaxis=dict(title_font=dict(size=16), tickfont=dict(size=14)),
+        legend=dict(font=dict(size=15)),
         colorway=RONAS_COLORS
     )
 )
@@ -43,6 +51,9 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 import streamlit.components.v1 as components
 import os
+def render_chart(fig, **kwargs):
+    fig.update_traces(textfont_size=18)
+    st.plotly_chart(fig, **kwargs)
 
 st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
 
@@ -144,16 +155,17 @@ p, li, span, label {{
     border: 1px solid var(--border) !important;
 }}
 
-.stMetric label {{
+.stMetric label {
     color: var(--text-muted) !important;
-    font-size: 0.95rem !important;
-    font-weight: 500 !important;
-}}
-.stMetric [data-testid="stMetricValue"] {{
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+}
+.stMetric [data-testid="stMetricValue"] {
     color: var(--text-main) !important;
     font-family: var(--font-main) !important;
     font-weight: 800 !important;
-}}
+    font-size: 2.5rem !important;
+}
 /* The Liquid Glass Navbar */
 .liquid-nav {{
     position: fixed;
@@ -569,7 +581,7 @@ elif nav == "executive":
         xaxis=dict(rangeslider=dict(visible=True)),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
-    st.plotly_chart(fig_bar, use_container_width=True)
+    render_chart(fig_bar, use_container_width=True)
     
     st.markdown("---")
     st.subheader("🥧 Department Share Analysis")
@@ -603,7 +615,7 @@ elif nav == "executive":
             showlegend=True, 
             legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=1)
         )
-        st.plotly_chart(fig_donut, use_container_width=True)
+        render_chart(fig_donut, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════
 # PARTNER EVALUATION MATRIX
@@ -662,7 +674,7 @@ elif nav == "matrix":
     fig_scatter.add_hline(y=80, line_dash="dash", line_color="red", annotation_text="80% Cutoff")
     fig_scatter.add_hline(y=50, line_dash="dash", line_color="orange", annotation_text="50% Threshold")
     fig_scatter.update_layout(height=600)
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    render_chart(fig_scatter, use_container_width=True)
     
     st.subheader("📋 Partner Action Table")
     st.dataframe(filtered_eval_df.sort_values('HC Share %', ascending=False).style.background_gradient(subset=['HC Share %'], cmap='Reds'), use_container_width=True)
@@ -717,7 +729,7 @@ elif nav == "matrix":
             labels={'institution_name': 'Institution', 'test_count': 'Volume'}
         )
         fig_drill.update_layout(barmode='stack', xaxis_tickangle=-45)
-        st.plotly_chart(fig_drill, use_container_width=True)
+        render_chart(fig_drill, use_container_width=True)
         
     st.markdown("---")
     st.subheader("💡 Special Insight: Dr. Lal Path Labs")
@@ -753,7 +765,7 @@ elif nav == "specialty":
                              title="Test Volume Over Time by Specialty",
                              labels={'test_count': 'Total Tests', 'date': 'Month'},
                              template='plotly_white')
-    st.plotly_chart(fig_spec_trend, use_container_width=True)
+    render_chart(fig_spec_trend, use_container_width=True)
     
     st.divider()
     
@@ -773,7 +785,7 @@ elif nav == "specialty":
                                labels={'test_count': 'Total Tests', 'institution_name': 'Institution'},
                                color='test_count', color_continuous_scale='Purples')
         fig_spec_hosp.update_layout(yaxis={'categoryorder':'total ascending'})
-        st.plotly_chart(fig_spec_hosp, use_container_width=True)
+        render_chart(fig_spec_hosp, use_container_width=True)
     
     st.divider()
     
@@ -785,7 +797,7 @@ elif nav == "specialty":
                            title="Distribution of Tests from Specialty down to Department",
                            color='test_count', color_continuous_scale='Teal')
     fig_flow.update_layout(margin=dict(t=30, l=0, r=0, b=0))
-    st.plotly_chart(fig_flow, use_container_width=True)
+    render_chart(fig_flow, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════
 # PREDICTIVE FORECAST
@@ -867,13 +879,13 @@ elif nav == "forecast":
         
         with c1:
             fig_vol_proj = px.line(combined, x='Date', y='Total Volume', color='Type', markers=True, title="📈 Test Volume Projection", line_dash='Type')
-            st.plotly_chart(fig_vol_proj, use_container_width=True)
+            render_chart(fig_vol_proj, use_container_width=True)
             
         with c2:
             fig_share_proj = px.line(combined, x='Date', y='HC Share %', color='Type', markers=True, title="📉 Histo-Cyto Share % Projection", line_dash='Type')
             fig_share_proj.update_layout(yaxis=dict(range=[0, 100]))
             fig_share_proj.add_hline(y=80, line_dash="dash", line_color="red", annotation_text="80% Cutoff Danger Zone")
-            st.plotly_chart(fig_share_proj, use_container_width=True)
+            render_chart(fig_share_proj, use_container_width=True)
             
         trend_dir = "increasing ↗️" if future_share[-1] > ts['hc_share'].iloc[-1] else "decreasing ↘️"
         st.info(f"**🤖 AI Insight for {forecast_inst}:** The Histo-Cyto share is projected to **{trend_dir}**, reaching **{future_share[-1]:.1f}%** by {future_dates[-1].strftime('%B %Y')}.")
