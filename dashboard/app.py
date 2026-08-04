@@ -10,7 +10,7 @@ pio.templates["ronas"] = go.layout.Template(
     layout=go.Layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#6B7280", family="-apple-system, SF Pro Display, sans-serif"),
+        font=dict(color="#6B7280", family=""Glogmy", "SF Pro Display", sans-serif"),
         colorway=RONAS_COLORS
     )
 )
@@ -42,22 +42,22 @@ st.markdown("""
   --accent: #10B981;
   --accent-hover: #059669;
   --border: #E5E7EB;
-  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-main: "Glogmy", "SF Pro Display", sans-serif;
 }
 .stApp {
     background-color: var(--app-bg) !important;
     color: var(--text-main) !important;
-    font-family: var(--font-apple);
+    font-family: var(--font-main);
 }
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-main) !important;
-    font-family: var(--font-apple) !important;
+    font-family: var(--font-main) !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em;
 }
 p, li, span, label {
     color: var(--text-main);
-    font-family: var(--font-apple);
+    font-family: var(--font-main);
 }
 .stMetric {
     background-color: var(--card-bg) !important;
@@ -74,7 +74,7 @@ p, li, span, label {
 }
 .stMetric [data-testid="stMetricValue"] {
     color: var(--text-main) !important;
-    font-family: var(--font-apple) !important;
+    font-family: var(--font-main) !important;
     font-weight: 800 !important;
 }
 /* The Liquid Glass Navbar */
@@ -103,7 +103,7 @@ p, li, span, label {
     padding: 8px 12px;
     border-radius: 8px;
     transition: all 0.3s ease;
-    font-family: var(--font-apple);
+    font-family: var(--font-main);
 }
 .liquid-nav a:hover {
     color: var(--accent) !important;
@@ -199,7 +199,7 @@ if 'splash_shown_final' not in st.session_state:
         }
         .splash-text-container h1 {
             color: #FFFFFF;
-            font-family: var(--font-apple);
+            font-family: var(--font-main);
             font-size: 3rem;
             margin: 0 0 10px 0;
             font-weight: 300;
@@ -207,7 +207,7 @@ if 'splash_shown_final' not in st.session_state:
         }
         .splash-text-container p {
             color: #A78BFA;
-            font-family: var(--font-apple);
+            font-family: var(--font-main);
             font-size: 1.2rem;
             margin: 0;
             letter-spacing: 3px;
@@ -328,10 +328,10 @@ top_df = filtered_df[filtered_df['institution_name'].isin(top_institutions)]
 
 st.markdown(f"""
 <div style="background-color: var(--offwhite); padding: 15px; border-radius: 12px; border-left: 6px solid var(--brown-500); margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--brown-900) !important; font-size: 1.5rem; font-family: var(--font-apple);">
+    <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--brown-900) !important; font-size: 1.5rem; font-family: var(--font-main);">
         📅 <strong>Period:</strong> {start_month} to {end_month} &nbsp;|&nbsp; 🏢 <strong>Analyzing Top {top_n} Institutions</strong>
     </h4>
-    <p style="margin: 0; color: var(--brown-600) !important; font-weight: 500; font-size: 0.95rem; font-family: var(--font-apple);">
+    <p style="margin: 0; color: var(--brown-600) !important; font-weight: 500; font-size: 0.95rem; font-family: var(--font-main);">
         ✨ <span style="background-color: #F8F4EE; padding: 2px 6px; border-radius: 4px;">Created by Application Team, Aswini Diagnostic Services</span>
     </p>
 </div>
