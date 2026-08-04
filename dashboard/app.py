@@ -6,8 +6,57 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
+
+sound_js = """
+<script>
+if (window.parent && window.parent.document && !window.parent.window.__soundEngineInit) {
+    window.parent.window.__soundEngineInit = true;
+    const AudioContext = window.parent.window.AudioContext || window.parent.window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    
+    window.parent.window.playClickSound = function() {
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+    };
+
+    window.parent.window.playIntroSound = function() {
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        const freqs = [220, 277.18, 329.63, 440]; 
+        freqs.forEach(f => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = f;
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 2);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 6);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 6);
+        });
+    };
+
+    window.parent.document.addEventListener('click', function(e) {
+        window.parent.window.playClickSound();
+    });
+}
+</script>
+"""
+components.html(sound_js, height=0, width=0)
 
 st.markdown("""
 <style>
@@ -237,6 +286,15 @@ if 'splash_shown' not in st.session_state:
         </div>
         """
         st.markdown(splash_html, unsafe_allow_html=True)
+        components.html("""
+        <script>
+        setTimeout(() => {
+            if (window.parent && window.parent.window.playIntroSound) {
+                window.parent.window.playIntroSound();
+            }
+        }, 500);
+        </script>
+        """, height=0, width=0)
     except Exception as e:
         pass
 
