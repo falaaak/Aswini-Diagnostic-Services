@@ -189,11 +189,13 @@ p, li, span, label {
 </div>
 """, unsafe_allow_html=True)
 
-if 'splash_shown' not in st.session_state:
-    st.session_state.splash_shown = True
+if 'splash_shown_v2' not in st.session_state:
+    st.session_state.splash_shown_v2 = True
     try:
         import base64
-        with open("purple_phoenix.jpg", "rb") as f:
+        import os
+        img_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "purple_phoenix.jpg")
+        with open(img_path, "rb") as f:
             phoenix_b64 = base64.b64encode(f.read()).decode()
             
         splash_html = f"""
