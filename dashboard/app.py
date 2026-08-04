@@ -286,7 +286,7 @@ def load_data():
     file_path = os.path.join(parent_dir, 'master_b2b_institution_records.csv')
     cols = ['report_month', 'institution_name', 'test_count', 'total_bill_amount', 
             'department', 'histo_cyto_group', 'is_outsourced']
-    df = pd.read_csv(file_path, usecols=cols)
+    df = pd.read_csv(file_path, usecols=cols, low_memory=False)
     
     df['total_bill_amount'] = pd.to_numeric(df['total_bill_amount'].astype(str).str.replace(',', ''), errors='coerce').fillna(0)
     df['test_count'] = pd.to_numeric(df['test_count'], errors='coerce').fillna(0).astype(int)
