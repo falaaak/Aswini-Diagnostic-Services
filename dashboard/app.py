@@ -3,6 +3,10 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
+import difflib
+import ast
+import operator
+import re
 
 theme = st.query_params.get("theme", "light")
 if theme not in ["light", "dark"]:
@@ -425,40 +429,99 @@ search_query = st.query_params.get("search", "").strip()
 
 if search_query:
     st.header(f"🔎 Global Search Results for '{search_query}'")
-    search_lower = search_query.lower()
-    st.markdown(f"Searching across Institutions, Doctor Specialties, and Lab Departments...")
     
+    # 1. Math Evaluator
+    try:
+        clean_expr = re.sub(r'\s+', '', search_query)
+        if re.match(r'^[\d\.\+\-\*\/\(\)]+$', clean_expr) and len(clean_expr) > 2:
+            result = eval(clean_expr)
+            st.info(f"🧮 **Spotlight Calculator:** `{search_query} = {result:,.2f}`")
+    except Exception:
+        pass
+        
+    # 2. Natural Language Aggregation
+    query_lower = search_query.lower()
+    agg_keywords = ['total', 'sum', 'avg', 'average', 'mean']
+    metric_keywords = {{
+        'revenue': 'total_bill_amount', 'bill': 'total_bill_amount', 'sales': 'total_bill_amount',
+        'tests': 'test_count', 'count': 'test_count', 'volume': 'test_count'
+    }}
+    
+    found_agg = next((kw for kw in agg_keywords if kw in query_lower), None)
+    found_metric_word = next((kw for kw in metric_keywords.keys() if kw in query_lower), None)
+    
+    all_insts = df['institution_name'].dropna().unique().tolist()
+    all_specs = df['doctor_specialty'].dropna().unique().tolist()
+    all_depts = df['department'].dropna().unique().tolist()
+    
+    if found_agg and found_metric_word:
+        target_col = metric_keywords[found_metric_word]
+        subject = query_lower.replace(found_agg, "").replace(found_metric_word, "").replace("of", "").replace("for", "").replace("in", "").strip()
+        
+        if subject:
+            inst_match = difflib.get_close_matches(subject, all_insts, n=1, cutoff=0.5)
+            spec_match = difflib.get_close_matches(subject, all_specs, n=1, cutoff=0.5)
+            dept_match = difflib.get_close_matches(subject, all_depts, n=1, cutoff=0.5)
+            
+            match_col, match_val = None, None
+            if inst_match:
+                match_col, match_val = 'institution_name', inst_match[0]
+            elif spec_match:
+                match_col, match_val = 'doctor_specialty', spec_match[0]
+            elif dept_match:
+                match_col, match_val = 'department', dept_match[0]
+                
+            if match_col:
+                agg_df = df[df[match_col] == match_val]
+                if found_agg in ['avg', 'average', 'mean']:
+                    calc_val = agg_df[target_col].mean()
+                    agg_name = "Average"
+                else:
+                    calc_val = agg_df[target_col].sum()
+                    agg_name = "Total"
+                st.success(f"✨ **Spotlight Intelligence:** {agg_name} {found_metric_word.title()} for **{match_val}** is **{calc_val:,.2f}**")
+                
+    # 3. Fuzzy Match Data Search
+    st.markdown(f"Searching across Institutions, Doctor Specialties, and Lab Departments...")
     c1, c2, c3 = st.columns(3)
     
-    inst_matches = df[df['institution_name'].str.lower().str.contains(search_lower, na=False)]['institution_name'].unique()
+    inst_matches = difflib.get_close_matches(search_query, all_insts, n=15, cutoff=0.3)
+    spec_matches = difflib.get_close_matches(search_query, all_specs, n=15, cutoff=0.3)
+    dept_matches = difflib.get_close_matches(search_query, all_depts, n=15, cutoff=0.3)
+    
+    if not inst_matches:
+        inst_matches = [x for x in all_insts if search_query.lower() in x.lower()]
+    if not spec_matches:
+        spec_matches = [x for x in all_specs if search_query.lower() in x.lower()]
+    if not dept_matches:
+        dept_matches = [x for x in all_depts if search_query.lower() in x.lower()]
+        
     with c1:
         with st.expander(f"🏢 Institutions ({len(inst_matches)})", expanded=True):
-            if len(inst_matches) > 0:
+            if inst_matches:
                 st.dataframe(pd.DataFrame({"Matching Institutions": inst_matches}), use_container_width=True)
             else:
                 st.info("No matches.")
                 
-    spec_matches = df[df['doctor_specialty'].str.lower().str.contains(search_lower, na=False)]['doctor_specialty'].unique()
     with c2:
         with st.expander(f"👨‍⚕️ Specialties ({len(spec_matches)})", expanded=True):
-            if len(spec_matches) > 0:
+            if spec_matches:
                 st.dataframe(pd.DataFrame({"Matching Specialties": spec_matches}), use_container_width=True)
             else:
                 st.info("No matches.")
                 
-    dept_matches = df[df['department'].str.lower().str.contains(search_lower, na=False)]['department'].unique()
     with c3:
         with st.expander(f"🧪 Departments ({len(dept_matches)})", expanded=True):
-            if len(dept_matches) > 0:
+            if dept_matches:
                 st.dataframe(pd.DataFrame({"Matching Departments": dept_matches}), use_container_width=True)
             else:
                 st.info("No matches.")
                 
-    st.subheader("Raw Data Preview (First 100 rows)")
+    st.subheader("Raw Data Preview")
     raw_matches = df[
-        df['institution_name'].str.lower().str.contains(search_lower, na=False) |
-        df['doctor_specialty'].str.lower().str.contains(search_lower, na=False) |
-        df['department'].str.lower().str.contains(search_lower, na=False)
+        df['institution_name'].isin(inst_matches) |
+        df['doctor_specialty'].isin(spec_matches) |
+        df['department'].isin(dept_matches)
     ]
     if not raw_matches.empty:
         st.dataframe(raw_matches.head(100), use_container_width=True)
