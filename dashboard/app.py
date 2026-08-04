@@ -91,7 +91,7 @@ st.markdown(f"""
     font-family: var(--font-main);
 }}
 h1, h2, h3, h4, h5, h6 {{
-    color: var(--text-main) !important;
+    color: #EA580C !important;
     font-family: var(--font-main) !important;
     font-weight: 700 !important;
     letter-spacing: -0.02em;
@@ -104,9 +104,18 @@ p, li, span, label {{
     color: #EA580C !important;
     font-weight: 700 !important;
 }}
-/* Force Principle Font everywhere */
-* {{
-    font-family: var(--font-main) !important;
+/* Apply Principle Font safely without breaking icons */
+.stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6, .stApp table, .stApp td, .stApp th {{
+    font-family: var(--font-main);
+}}
+/* Fix Expander (Filter) Titles and Arrows to be Dark Orange */
+[data-testid="stExpander"] summary p {{
+    color: #EA580C !important;
+    font-weight: bold !important;
+}}
+[data-testid="stExpander"] summary svg {{
+    color: #EA580C !important;
+    fill: #EA580C !important;
 }}
 
 /* 3D Shadows & Rounded Corners for Cards and Charts */
@@ -156,7 +165,8 @@ p, li, span, label {{
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 15px;
+    flex-wrap: wrap;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
 }}
 .liquid-nav a {{
