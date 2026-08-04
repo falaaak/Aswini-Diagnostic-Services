@@ -1,0 +1,18 @@
+# Streamlit
+.streamlit/credentials.toml
+*.pyc
+__pycache__/
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# Exported files (optional, but probably good to ignore large zips if they are just backups)
+Aswini_Export.zip
+Aswini_Export/
