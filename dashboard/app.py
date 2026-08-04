@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import streamlit.components.v1 as components
+import os
 
 st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
 
@@ -280,7 +281,9 @@ if 'splash_shown_final' not in st.session_state:
 # ══════════════════════════════════════════════════════════════════
 @st.cache_data
 def load_data():
-    file_path = '/Users/mohammedfalah/Documents/Aswini/master_b2b_institution_records.csv'
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    file_path = os.path.join(parent_dir, 'master_b2b_institution_records.csv')
     cols = ['report_month', 'institution_name', 'test_count', 'total_bill_amount', 
             'department', 'histo_cyto_group', 'is_outsourced']
     df = pd.read_csv(file_path, usecols=cols)
