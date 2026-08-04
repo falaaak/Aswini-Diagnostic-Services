@@ -182,7 +182,8 @@ p, li, span, label {
 <div class="liquid-nav">
     <a href="?nav=matrix&splash=0">📊 B2B Matrix</a>
     <a href="?nav=executive&splash=0">📈 Executive Summary</a>
-    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height: 50px; margin: 0 15px;">
+    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height:40px; margin:0 15px;">
+    <a href="?nav=specialty&splash=0">👨‍⚕️ Specialty Analysis</a>
     <a href="?nav=forecast&splash=0">🔮 Forecast</a>
     <a href="?nav=team&splash=0">👨‍💻 Application Team</a>
     <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing&ouid=109163273083599607293&rtpof=true&sd=true" class="gdrive-btn" target="_blank">💾 Master Data</a>
@@ -297,6 +298,18 @@ def load_data():
     df['date'] = pd.to_datetime(df['report_month'], format='%B %Y', errors='coerce')
     df = df.dropna(subset=['date'])
     df = df.sort_values('date')
+    
+    SPECIALTY_MAP = {
+        'CLINICAL BIOCHEMISTRY': 'General Medicine',
+        'CLINICAL PATHOLOGY': 'General Medicine',
+        'HISTOPATHOLOGY & CYTOPATHOLOGY': 'Oncology & Surgery',
+        'MOLECULAR BIOLOGY': 'Genetics / Molecular Oncology',
+        'HAEMATOLOGY': 'Hematology',
+        'MICROBIOLOGY': 'Infectious Diseases',
+        'SEROLOGY': 'Infectious Diseases',
+        'IMMUNOLOGY': 'Rheumatology / Immunology'
+    }
+    df['doctor_specialty'] = df['department'].str.upper().map(SPECIALTY_MAP).fillna('Other / Unmapped')
     
     lal_path_df['date'] = pd.to_datetime(lal_path_df['report_month'], format='%B %Y', errors='coerce')
     lal_path_df = lal_path_df.dropna(subset=['date'])
@@ -563,7 +576,52 @@ elif nav == "matrix":
         st.markdown("**🗓️ Monthly Department Breakdown (Lal Path Labs)**")
         lal_monthly = lal_path_df.groupby(['report_month', 'department'])['test_count'].sum().reset_index()
         lal_pivot = lal_monthly.pivot(index='report_month', columns='department', values='test_count').fillna(0).astype(int)
-        st.dataframe(lal_pivot, use_container_width=True)
+        st.dataframe(lal_pivot.style.background_gradient(cmap='YlGnBu'), use_container_width=True)
+
+elif nav == "specialty":
+    st.header("👨‍⚕️ Doctor Specialty & Prescription Pattern Analysis")
+    st.markdown("This section maps test departments to inferred Doctor Specialties to analyze prescription patterns from our top B2B partners.")
+    
+    # 1. Overall Specialty Volume Trend
+    st.subheader("📈 Monthly Test Volume by Doctor Specialty")
+    spec_monthly = filtered_df.groupby(['date', 'report_month', 'doctor_specialty'])['test_count'].sum().reset_index()
+    fig_spec_trend = px.area(spec_monthly, x='date', y='test_count', color='doctor_specialty',
+                             title="Test Volume Over Time by Specialty",
+                             labels={'test_count': 'Total Tests', 'date': 'Month'},
+                             template='plotly_white')
+    st.plotly_chart(fig_spec_trend, use_container_width=True)
+    
+    st.divider()
+    
+    # 2. Top Hospitals by Specialty Breakdown
+    st.subheader("🏥 Top Hospitals driving Specialty Volumes")
+    c1, c2 = st.columns([1, 2])
+    with c1:
+        specialties = filtered_df['doctor_specialty'].unique().tolist()
+        selected_spec = st.selectbox("Select a Doctor Specialty to analyze:", specialties)
+    
+    with c2:
+        spec_inst_df = filtered_df[filtered_df['doctor_specialty'] == selected_spec]
+        spec_inst_grouped = spec_inst_df.groupby('institution_name')['test_count'].sum().reset_index().sort_values('test_count', ascending=False).head(10)
+        
+        fig_spec_hosp = px.bar(spec_inst_grouped, x='test_count', y='institution_name', orientation='h',
+                               title=f"Top 10 Partners prescribing {selected_spec} tests",
+                               labels={'test_count': 'Total Tests', 'institution_name': 'Institution'},
+                               color='test_count', color_continuous_scale='Purples')
+        fig_spec_hosp.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig_spec_hosp, use_container_width=True)
+    
+    st.divider()
+    
+    # 3. Specialty to Department Mapping Visualization
+    st.subheader("🔗 Prescription Pattern: Specialty to Department Flow")
+    st.markdown("Understand which specific lab departments make up the selected Doctor Specialty.")
+    flow_df = filtered_df.groupby(['doctor_specialty', 'department'])['test_count'].sum().reset_index()
+    fig_flow = px.sunburst(flow_df, path=['doctor_specialty', 'department'], values='test_count',
+                           title="Distribution of Tests from Specialty down to Department",
+                           color='test_count', color_continuous_scale='Teal')
+    fig_flow.update_layout(margin=dict(t=30, l=0, r=0, b=0))
+    st.plotly_chart(fig_flow, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════
 # PREDICTIVE FORECAST
