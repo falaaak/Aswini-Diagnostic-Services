@@ -24,54 +24,6 @@ import os
 
 st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
 
-sound_js = """
-<script>
-if (window.parent && window.parent.document && !window.parent.window.__soundEngineInit) {
-    window.parent.window.__soundEngineInit = true;
-    const AudioContext = window.parent.window.AudioContext || window.parent.window.webkitAudioContext;
-    const audioCtx = new AudioContext();
-    
-    window.parent.window.playClickSound = function() {
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
-    };
-
-    window.parent.window.playIntroSound = function() {
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-        const freqs = [220, 277.18, 329.63, 440]; 
-        freqs.forEach(f => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.value = f;
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 2);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 6);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 6);
-        });
-    };
-
-    window.parent.document.addEventListener('click', function(e) {
-        window.parent.window.playClickSound();
-    });
-}
-</script>
-"""
-components.html(sound_js, height=0, width=0)
-
 st.markdown("""
 <style>
 /* Hide the default streamlit header */
@@ -230,20 +182,20 @@ if 'splash_shown_final' not in st.session_state:
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeOut 1.5s ease-in-out 4s forwards;
+            animation: fadeOut 0.8s ease-in-out 1.5s forwards;
         }
         .splash-logo {
             width: 280px;
             opacity: 0;
             position: absolute;
-            animation: showLogo 2s ease-in-out 0.5s forwards;
+            animation: showLogo 1s ease-in-out 0.2s forwards;
         }
         .splash-text-container {
             position: absolute;
             top: 65%;
             text-align: center;
             opacity: 0;
-            animation: showText 1.5s ease-in-out 1.5s forwards;
+            animation: showText 0.8s ease-in-out 0.8s forwards;
         }
         .splash-text-container h1 {
             color: #FFFFFF;
@@ -259,7 +211,7 @@ if 'splash_shown_final' not in st.session_state:
             font-size: 1.2rem;
             margin: 0;
             letter-spacing: 3px;
-            animation: showSubText 1s ease-in-out 2.5s forwards;
+            animation: showSubText 0.8s ease-in-out 1.2s forwards;
             opacity: 0;
         }
         @keyframes showLogo {
@@ -288,15 +240,6 @@ if 'splash_shown_final' not in st.session_state:
         </div>
         """
         st.markdown(splash_html, unsafe_allow_html=True)
-        components.html("""
-        <script>
-        setTimeout(() => {
-            if (window.parent && window.parent.window.playIntroSound) {
-                window.parent.window.playIntroSound();
-            }
-        }, 500);
-        </script>
-        """, height=0, width=0)
 
 # ══════════════════════════════════════════════════════════════════
 # DATA LOADING & PREPROCESSING
