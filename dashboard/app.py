@@ -285,7 +285,7 @@ def load_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
     file_path = os.path.join(parent_dir, 'master_b2b_institution_records.csv')
-    cols = ['report_month', 'institution_name', 'test_count', 'total_bill_amount', 
+    cols = ['report_month', 'institution_name', 'test_name', 'test_count', 'total_bill_amount', 
             'department', 'histo_cyto_group', 'is_outsourced']
     df = pd.read_csv(file_path, usecols=cols, low_memory=False)
     
@@ -299,21 +299,33 @@ def load_data():
     df = df.dropna(subset=['date'])
     df = df.sort_values('date')
     
-    SPECIALTY_MAP = {
-        'CLINICAL BIOCHEMISTRY': 'General Medicine',
-        'CLINICAL PATHOLOGY': 'General Medicine',
-        'HISTOPATHOLOGY & CYTOPATHOLOGY': 'Oncology & Surgery',
-        'MOLECULAR BIOLOGY': 'Genetics / Molecular Oncology',
-        'HAEMATOLOGY': 'Hematology',
-        'MICROBIOLOGY': 'Infectious Diseases',
-        'SEROLOGY': 'Infectious Diseases',
-        'IMMUNOLOGY': 'Rheumatology / Immunology'
-    }
-    df['doctor_specialty'] = df['department'].str.upper().map(SPECIALTY_MAP).fillna('Other / Unmapped')
+    def classify_specialty(row):
+        test = str(row['test_name']).upper()
+        dept = str(row['department']).upper()
+        
+        if any(k in test for k in ['LIPID', 'CHOLESTEROL', 'TROPONIN', 'CK-MB', 'NT-PROBNP', 'APOLIPOPROTEIN', 'CPK']): return 'Cardiology'
+        elif any(k in test for k in ['HCG', 'PROLACTIN', 'AMH', 'FSH', 'LH', 'TRIMESTER', 'PREGNANCY', 'PAP SMEAR', 'RUBELLA', 'OVARIAN']): return 'Gynecology'
+        elif any(k in test for k in ['THYROID', 'TSH', 'T3', 'T4', 'HBA1C', 'GLUCOSE', 'INSULIN', 'CORTISOL', 'TESTOSTERONE', 'PTH', 'PARATHYROID']): return 'Endocrinology'
+        elif any(k in test for k in ['PSA', 'SEMEN', 'URINE ROUTINE', 'URINE CULTURE']): return 'Urology'
+        elif any(k in test for k in ['CREATININE', 'UREA', 'MICROALBUMIN', 'BUN', 'ELECTROLYTE', 'SODIUM', 'POTASSIUM']): return 'Nephrology'
+        elif any(k in test for k in ['LIVER', 'LFT', 'BILIRUBIN', 'SGPT', 'SGOT', 'AMYLASE', 'LIPASE', 'ENDOSCOPY', 'STOOL', 'HCV', 'HBSAG']): return 'Gastroenterology'
+        elif any(k in test for k in ['CA 125', 'CA 19', 'CA 15', 'CEA', 'AFP', 'TUMOR', 'BONE MARROW']) or 'CYTOLOGY' in dept: return 'Oncology'
+        elif any(k in test for k in ['NEWBORN', 'METABOLIC SCREEN']): return 'Paediatrics'
+        elif any(k in test for k in ['VITAMIN D', 'CALCIUM', 'URIC ACID', 'PHOSPHOROUS', 'BONE']): return 'Ortho'
+        elif any(k in test for k in ['RHEUMATOID', 'ANTI CCP', 'ANA ', 'HLA']): return 'Physical Medicine'
+        elif 'CSF' in test: return 'Neurology'
+        elif any(k in test for k in ['FUNGUS', 'SKIN', 'SCRAPING']): return 'Dermatology'
+        elif any(k in test for k in ['SPUTUM', 'TB', 'ACID FAST', 'AFB', 'MANTOUX']): return 'Pulmonology'
+        elif any(k in test for k in ['SWAB', 'COVID']): return 'ENT'
+        elif 'HISTOPATHOLOGY' in dept: return 'General Surgery'
+        else: return 'General Medicine'
+        
+    df['doctor_specialty'] = df.apply(classify_specialty, axis=1)
     
     lal_path_df['date'] = pd.to_datetime(lal_path_df['report_month'], format='%B %Y', errors='coerce')
     lal_path_df = lal_path_df.dropna(subset=['date'])
     lal_path_df = lal_path_df.sort_values('date')
+    lal_path_df['doctor_specialty'] = lal_path_df.apply(classify_specialty, axis=1)
     
     return df, lal_path_df
 
