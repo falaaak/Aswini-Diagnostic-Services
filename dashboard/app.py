@@ -100,6 +100,10 @@ p, li, span, label {{
     color: var(--text-main);
     font-family: var(--font-main);
 }}
+[data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] span, .stMarkdown h3, .stMarkdown h4, .stMarkdown p strong {{
+    color: #EA580C !important;
+    font-weight: 700 !important;
+}}
 .stMetric {{
     background-color: var(--card-bg) !important;
     padding: 20px !important;
