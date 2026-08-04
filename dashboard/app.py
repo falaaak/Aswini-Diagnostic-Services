@@ -155,17 +155,17 @@ p, li, span, label {{
     border: 1px solid var(--border) !important;
 }}
 
-.stMetric label {
+.stMetric label {{
     color: var(--text-muted) !important;
     font-size: 1.15rem !important;
     font-weight: 600 !important;
-}
-.stMetric [data-testid="stMetricValue"] {
+}}
+.stMetric [data-testid="stMetricValue"] {{
     color: var(--text-main) !important;
     font-family: var(--font-main) !important;
     font-weight: 800 !important;
     font-size: 2.5rem !important;
-}
+}}
 /* The Liquid Glass Navbar */
 .liquid-nav {{
     position: fixed;
