@@ -63,29 +63,29 @@ current_nav = st.query_params.get("nav", "matrix")
 
 if theme == "light":
     css_vars = """
-  --app-bg: #F9FAFB;
+  --app-bg: #F4F7FE;
   --card-bg: #FFFFFF;
   --text-main: #111827;
   --text-muted: #6B7280;
   --accent: #10B981;
   --accent-hover: #059669;
   --border: #E5E7EB;
-  --nav-bg: rgba(255, 255, 255, 0.85);
-  --nav-border: rgba(229, 231, 235, 0.5);
-  --nav-hover-bg: rgba(243, 244, 246, 0.8);
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-border: rgba(255, 255, 255, 0.5);
+  --nav-hover-bg: rgba(16, 185, 129, 0.1);
 """
 else:
     css_vars = """
-  --app-bg: #0B0F19;
-  --card-bg: #111827;
-  --text-main: #F9FAFB;
+  --app-bg: #111315;
+  --card-bg: #1A1D21;
+  --text-main: #FFFFFF;
   --text-muted: #9CA3AF;
   --accent: #10B981;
   --accent-hover: #059669;
-  --border: #1F2937;
-  --nav-bg: rgba(17, 24, 39, 0.85);
-  --nav-border: rgba(31, 41, 55, 0.5);
-  --nav-hover-bg: rgba(31, 41, 55, 0.8);
+  --border: #2D3748;
+  --nav-bg: rgba(26, 29, 33, 0.75);
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --nav-hover-bg: rgba(16, 185, 129, 0.2);
 """
 
 st.markdown(f"""
@@ -96,13 +96,11 @@ st.markdown(f"""
 }}
 /* Push the main app content down */
 [data-testid="stAppViewBlockContainer"] {{
-    margin-top: 80px;
+    margin-top: 90px;
 }}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 :root{{
 {css_vars}
-  --font-main: "Inter", "SF Pro Display", -apple-system, sans-serif;
-  --transition-smooth: 0.2s ease-in-out;
+  --font-main: "Glogmy", Copperplate, "SF Pro Display", sans-serif;
 }}
 .stApp {{
     background-color: var(--app-bg) !important;
@@ -110,9 +108,9 @@ st.markdown(f"""
     font-family: var(--font-main);
 }}
 h1, h2, h3, h4, h5, h6 {{
-    color: var(--text-main) !important;
+    color: #EA580C !important;
     font-family: var(--font-main) !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     letter-spacing: -0.02em;
 }}
 p, li, span, label {{
@@ -120,150 +118,183 @@ p, li, span, label {{
     font-family: var(--font-main);
 }}
 [data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] span, .stMarkdown h3, .stMarkdown h4, .stMarkdown p strong {{
-    color: var(--text-main) !important;
-    font-weight: 600 !important;
+    color: #EA580C !important;
+    font-weight: 700 !important;
 }}
 /* Apply Principle Font safely without breaking icons */
 .stApp, .stApp p, .stApp span, .stApp div, .stApp label, .stApp li, .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6, .stApp table, .stApp td, .stApp th {{
     font-family: var(--font-main);
 }}
-/* Fix Expander (Filter) Titles and Arrows */
+/* Fix Expander (Filter) Titles and Arrows to be Dark Orange */
 [data-testid="stExpander"] summary p {{
-    color: var(--text-main) !important;
-    font-weight: 600 !important;
+    color: #EA580C !important;
+    font-weight: bold !important;
 }}
 [data-testid="stExpander"] summary svg {{
-    color: var(--text-main) !important;
-    fill: var(--text-main) !important;
+    color: #EA580C !important;
+    fill: #EA580C !important;
 }}
 
-/* Clean Premium Elevation for Cards and Charts */
+/* 3D Shadows & Rounded Corners for Cards and Charts */
 .stMetric, [data-testid="stMetric"] {{
     background-color: var(--card-bg) !important;
     padding: 20px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 6px rgba(0,0,0,0.02) !important;
-    border: 1px solid var(--border) !important;
-    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    border: 2px solid #FF69B4 !important; /* Pink Border */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
 }}
 .stMetric:hover, [data-testid="stMetric"]:hover {{
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
-    border-color: #D1D5DB !important; 
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(138, 43, 226, 0.15), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    border-color: #8A2BE2 !important; /* Purple Border */
 }}
 
 .stPlotlyChart, .stVegaLiteChart, [data-testid="stDataFrame"] {{
     background-color: var(--card-bg) !important;
-    border-radius: 12px !important;
+    border-radius: 16px !important;
     padding: 10px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 6px rgba(0,0,0,0.02) !important;
-    border: 1px solid var(--border) !important;
-    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    border: 2px solid #FF69B4 !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
 }}
 .stPlotlyChart:hover, .stVegaLiteChart:hover, [data-testid="stDataFrame"]:hover {{
-    transform: translateY(-1px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(138, 43, 226, 0.15), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    border-color: #8A2BE2 !important;
 }}
 
 .stMetric label {{
     color: var(--text-muted) !important;
-    font-size: 0.95rem !important;
-    font-weight: 500 !important;
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
 }}
 .stMetric [data-testid="stMetricValue"] {{
     color: var(--text-main) !important;
     font-family: var(--font-main) !important;
-    font-weight: 700 !important;
-    font-size: 2rem !important;
+    font-weight: 800 !important;
+    font-size: 2.5rem !important;
 }}
-
-/* Clean Sleek Navbar */
+/* The Liquid Glass Navbar */
 .liquid-nav {{
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 70px;
-    background: linear-gradient(90deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1)), var(--nav-bg);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    border-bottom: 1px solid rgba(236, 72, 153, 0.2);
+    background: var(--nav-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 2px solid #FF69B4;
     z-index: 999999;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
-    align-items: center;
-    padding: 0 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    overflow-x: auto;
-    white-space: nowrap;
-}}
-.liquid-nav::-webkit-scrollbar {{
-    display: none;
-}}
-.liquid-nav a {{
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 0.9rem;
-    padding: 8px 14px;
-    border-radius: 8px;
-    transition: color var(--transition-smooth), background var(--transition-smooth);
-    font-family: var(--font-main);
-}}
-.liquid-nav a:hover {{
-    color: var(--text-main) !important;
-    background: var(--nav-hover-bg);
-}}
-.liquid-nav a.active-nav {{
-    color: var(--text-main) !important;
-    background: var(--nav-hover-bg);
-    font-weight: 600;
-}}
-.logo-container {{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 40px;
+    gap: 8vw;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+    transition: border-bottom-color 0.4s ease, box-shadow 0.4s ease;
 }}
-.logo-container img {{
-    height: 32px;
+.liquid-nav:hover {{
+    border-bottom-color: #8A2BE2;
+    box-shadow: 0 6px 30px rgba(138, 43, 226, 0.2);
+}}
+.liquid-nav a, .liquid-subnav a {{
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, background 0.3s ease;
+    font-family: var(--font-main);
+}}
+.liquid-nav a:hover, .liquid-subnav a:hover {{
+    color: #FF69B4 !important;
+    background: var(--nav-hover-bg);
+    transform: scale(1.1) translateY(-2px);
+}}
+.logo-mag-container {{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,20,147,0.1) 0%, rgba(138,43,226,0) 70%);
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.2), inset 0 2px 5px rgba(138, 43, 226, 0.2);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+}}
+.logo-mag-container:hover {{
+    transform: scale(1.25);
+    box-shadow: 0 8px 25px rgba(255, 20, 147, 0.5), inset 0 3px 8px rgba(138, 43, 226, 0.6);
+}}
+.logo-mag-container img {{
+    height: 42px;
     object-fit: contain;
 }}
 [data-testid="stExpander"] summary {{
-    transition: background var(--transition-smooth) !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
 }}
 [data-testid="stExpander"] summary:hover {{
-    background: var(--nav-hover-bg) !important;
+    transform: scale(1.02) translateX(8px) !important;
 }}
 .gdrive-btn {{
-    background: var(--text-main) !important;
-    color: var(--app-bg) !important;
-    padding: 8px 16px !important;
-    border-radius: 20px !important;
-    border: 1px solid transparent !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    transition: background var(--transition-smooth), opacity var(--transition-smooth);
+    background: var(--accent) !important;
+    color: white !important;
+    padding: 8px 20px !important;
+    border-radius: 30px !important;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3) !important;
+    border: 2px solid transparent !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, border-color 0.3s ease;
 }}
 .gdrive-btn:hover {{
-    opacity: 0.9 !important;
+    background: #8A2BE2 !important;
+    transform: scale(1.1) translateY(-2px);
+    border-color: #FF69B4 !important;
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4) !important;
 }}
 .nav-search-input {{
-    padding: 8px 16px;
+    padding: 8px 15px;
     border-radius: 20px;
-    border: 1px solid var(--border);
+    border: 2px solid #FF69B4;
     background: var(--card-bg);
     color: var(--text-main);
     font-family: var(--font-main);
-    font-size: 0.85rem;
     outline: none;
-    width: 200px;
-    transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+    width: 180px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease;
 }}
 .nav-search-input:hover, .nav-search-input:focus {{
-    border-color: #9CA3AF;
-    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.2);
+    transform: scale(1.05);
+    border-color: #8A2BE2;
+    box-shadow: 0 0 12px rgba(138, 43, 226, 0.3);
+}}
+.liquid-subnav {{
+    position: fixed;
+    top: 70px;
+    right: 30px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 2px solid #FF69B4;
+    border-top: none;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    z-index: 999998;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}}
+.liquid-subnav:hover {{
+    border-color: #8A2BE2;
+    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.2);
 }}
 /* Style Streamlit Tabs to look like modern pills */
 [data-baseweb="tab-list"] {{
@@ -286,23 +317,23 @@ p, li, span, label {{
     color: white !important;
 }}
 </style>
-<div class="liquid-nav">
-    <div class="logo-container">
+<div class="liquid-nav" style="display: flex; justify-content: center; align-items: center; gap: 6vw; padding: 0 20px;">
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
+        <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
+    </div>
+    <div class="logo-mag-container">
         <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png">
     </div>
-    <a href="?nav=matrix&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'matrix' else ''}">B2B Matrix</a>
-    <a href="?nav=executive&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'executive' else ''}">Executive Summary</a>
-    <a href="?nav=specialty&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'specialty' else ''}">Specialty Analysis</a>
-    <a href="?nav=forecast&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'forecast' else ''}">Forecast</a>
-    <a href="?nav=team&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'team' else ''}">Team</a>
-    <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self" style="padding: 8px;">{theme_icon}</a>
-    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">Master Data</a>
-    <form method="GET" style="margin: 0;">
-        <input type="hidden" name="nav" value="{current_nav}">
-        <input type="hidden" name="theme" value="{theme}">
-        <input type="hidden" name="splash" value="0">
-        <input type="text" class="nav-search-input" name="search" placeholder="Search insights...">
-    </form>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
+        <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
+        <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
+    </div>
+</div>
+<div class="liquid-subnav">
+    <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
+    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">💾 Master Data</a>
 </div>
 """, unsafe_allow_html=True)
 
@@ -450,15 +481,13 @@ nav = st.query_params.get("nav", "executive")
 if nav not in ['team']:
     with st.expander("🛠️ Filter Data & Slicers", expanded=True):
         st.markdown("<div style='padding: 10px 0;'>", unsafe_allow_html=True)
-        c_f1, c_f2 = st.columns([2, 1])
-        with c_f1:
-            start_month, end_month = st.select_slider(
-                'Select Time Period',
-                options=month_labels,
-                value=(month_labels[0], month_labels[-1])
-            )
-        with c_f2:
-            top_n = st.slider("Top Institutions", min_value=5, max_value=50, value=20, step=5)
+        start_month, end_month = st.select_slider(
+            '📅 Select Time Period',
+            options=month_labels,
+            value=(month_labels[0], month_labels[-1])
+        )
+        st.markdown("<br>", unsafe_allow_html=True)
+        top_n = st.slider("🏢 Number of Top Institutions", min_value=5, max_value=50, value=20, step=5)
         st.markdown("</div>", unsafe_allow_html=True)
 else:
     start_month, end_month = month_labels[0], month_labels[-1]
@@ -475,51 +504,24 @@ inst_totals = filtered_df.groupby('institution_name')['total_bill_amount'].sum()
 top_institutions = inst_totals.nlargest(top_n, 'total_bill_amount')['institution_name'].tolist()
 top_df = filtered_df[filtered_df['institution_name'].isin(top_institutions)]
 
-if nav not in ['team']:
-    hero_total_rev = filtered_df['total_bill_amount'].sum()
-    hero_total_tests = filtered_df['test_count'].sum()
-    hero_hc_tests = filtered_df[filtered_df['histo_cyto_group'] == 'Histopathology & Cytopathology']['test_count'].sum()
-    hero_hc_pct = (hero_hc_tests / hero_total_tests * 100) if hero_total_tests > 0 else 0
-    health_status = "🟢 Strong" if hero_hc_pct <= 50 else ("🟡 Monitor" if hero_hc_pct <= 80 else "🔴 High Risk")
-    
-    st.markdown(f"""
-    <div style="background-color: var(--card-bg); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
-            <div style="flex: 1; min-width: 300px;">
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">Executive Intelligence</p>
-                <h2 style="margin: 0 0 12px 0; font-size: 1.5rem; font-weight: 600;">{start_month} to {end_month} Analysis</h2>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
-                    Analyzing the top {top_n} institutions. Total B2B Revenue is at <strong>₹{hero_total_rev:,.0f}</strong> across <strong>{hero_total_tests:,}</strong> tests.
-                </p>
-            </div>
-            <div style="background-color: var(--app-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); min-width: 250px;">
-                <p style="margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 600;">Business Health: {health_status}</p>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">
-                    Histo-Cyto concentration is {hero_hc_pct:.1f}%. 
-                    {'Diversification is healthy.' if hero_hc_pct <= 50 else 'Monitor concentration risk.'}
-                </p>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+st.markdown(f"""
+<div style="background-color: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 6px solid #EA580C; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+    <h4 style="margin-top: 0; margin-bottom: 8px; color: #EA580C !important; font-size: 1.5rem; font-family: var(--font-main);">
+        📅 <strong>Period:</strong> {start_month} to {end_month} &nbsp;|&nbsp; 🏢 <strong>Analyzing Top {top_n} Institutions</strong>
+    </h4>
+    <p style="margin: 0; color: var(--text-muted) !important; font-weight: 500; font-size: 0.95rem; font-family: var(--font-main);">
+        ✨ <span style="background-color: transparent; border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px;">Created by Application Team, Aswini Diagnostic Services</span>
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════
 # ROUTING & SEARCH LOGIC
 # ══════════════════════════════════════════════════════════════════
-if "recent_searches" not in st.session_state:
-    st.session_state.recent_searches = []
-
 search_query = st.query_params.get("search", "").strip()
 
 if search_query:
-    if search_query not in st.session_state.recent_searches:
-        st.session_state.recent_searches.insert(0, search_query)
-        st.session_state.recent_searches = st.session_state.recent_searches[:5]
-        
     st.header(f"🔎 Global Search Results for '{search_query}'")
-    
-    if st.session_state.recent_searches:
-        st.markdown("**Recent Searches:** " + " • ".join([f"`{s}`" for s in st.session_state.recent_searches]))
     
     # 1. Math Evaluator
     try:
@@ -620,7 +622,7 @@ if search_query:
         st.warning("No data found.")
 
 elif nav == "executive":
-    st.header("Executive Summary")
+    st.header("📈 Overall Performance & Department Split")
     
     total_rev = filtered_df['total_bill_amount'].sum()
     total_tests = filtered_df['test_count'].sum()
@@ -628,28 +630,11 @@ elif nav == "executive":
     other_tests = total_tests - hc_tests
     hc_pct = (hc_tests / total_tests * 100) if total_tests > 0 else 0
     
-    st.markdown(f"""
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
-        <div class="stMetric" title="Total revenue billed across selected institutions">
-            <label>💰 Total B2B Revenue</label>
-            <div data-testid="stMetricValue">₹ {total_rev:,.0f}</div>
-        </div>
-        <div class="stMetric" title="Total number of tests billed">
-            <label>📋 Total Tests Billed</label>
-            <div data-testid="stMetricValue">{total_tests:,}</div>
-        </div>
-        <div class="stMetric" title="Tests falling under Histopathology & Cytopathology">
-            <label>🔬 Histo-Cyto Tests</label>
-            <div data-testid="stMetricValue">{hc_tests:,}</div>
-            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; font-weight: 500;">{hc_pct:.1f}% of total</div>
-        </div>
-        <div class="stMetric" title="Tests from all other departments">
-            <label>🧪 Other Dept Tests</label>
-            <div data-testid="stMetricValue">{other_tests:,}</div>
-            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; font-weight: 500;">{(100-hc_pct):.1f}% of total</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("💰 Total B2B Revenue", f"₹ {total_rev:,.0f}")
+    c2.metric("📋 Total Tests Billed", f"{total_tests:,}")
+    c3.metric("🔬 Histo-Cyto Tests", f"{hc_tests:,}", f"{hc_pct:.1f}% of total", delta_color="off")
+    c4.metric("🧪 Other Dept Tests", f"{other_tests:,}", f"{(100-hc_pct):.1f}% of total", delta_color="off")
         
     st.markdown("---")
     
@@ -678,8 +663,6 @@ elif nav == "executive":
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
     render_chart(fig_bar, use_container_width=True)
-    
-    st.info(f"**Business Insight:** The top {top_n} institutions generate ₹{top_df['total_bill_amount'].sum():,.0f} in revenue. Focus retention and upsell efforts on the top 3 partners.")
     
     st.markdown("---")
     st.subheader("🥧 Department Share Analysis")
@@ -714,15 +697,12 @@ elif nav == "executive":
             legend=dict(orientation="v", yanchor="top", y=1, xanchor="left", x=1)
         )
         render_chart(fig_donut, use_container_width=True)
-        st.info("**Business Insight:** A balanced share between Histo-Cyto and other departments indicates healthy service utilization and lower risk of dependency. Recommend cross-selling other lab tests to partners heavily skewed toward Histo-Cyto.")
 
 # ══════════════════════════════════════════════════════════════════
 # PARTNER EVALUATION MATRIX
 # ══════════════════════════════════════════════════════════════════
 elif nav == "matrix":
     st.header("⚖️ Partner Risk & Evaluation Matrix")
-    
-    total_overall_rev = filtered_df['total_bill_amount'].sum()
     
     eval_data = []
     for inst in top_institutions:
@@ -732,9 +712,6 @@ elif nav == "matrix":
         hc_vol = idf[idf['histo_cyto_group'] == 'Histopathology & Cytopathology']['test_count'].sum()
         oth_vol = vol - hc_vol
         hc_share = (hc_vol / vol * 100) if vol > 0 else 0
-        
-        rev_dependency = (rev / total_overall_rev * 100) if total_overall_rev > 0 else 0
-        priority = "High" if rev_dependency > 5 else ("Medium" if rev_dependency > 2 else "Low")
         
         if hc_share > 80:
             status = "🔴 Cut Short (Excessive HC Concentration)"
@@ -747,8 +724,6 @@ elif nav == "matrix":
             'Institution': inst,
             'Total Volume': vol,
             'Total Revenue': rev,
-            'Revenue Dependency %': round(rev_dependency, 1),
-            'Business Priority': priority,
             'HC Volume': hc_vol,
             'Other Volume': oth_vol,
             'HC Share %': round(hc_share, 1),
@@ -782,21 +757,8 @@ elif nav == "matrix":
     fig_scatter.update_layout(height=600)
     render_chart(fig_scatter, use_container_width=True)
     
-    st.info("**Business Insight:** Partners in the top-left quadrant are high-volume but overly dependent on Histo-Cyto. Diversify their test portfolio to reduce risk.")
-    
     st.subheader("📋 Partner Action Table")
-    
-    def highlight_priority(val):
-        if val == 'High': return 'background-color: #FEE2E2; color: #991B1B'
-        elif val == 'Medium': return 'background-color: #FEF3C7; color: #92400E'
-        return 'background-color: #D1FAE5; color: #065F46'
-        
-    st.dataframe(
-        filtered_eval_df.sort_values('HC Share %', ascending=False)
-        .style.background_gradient(subset=['HC Share %', 'Revenue Dependency %'], cmap='Reds')
-        .map(highlight_priority, subset=['Business Priority']),
-        use_container_width=True
-    )
+    st.dataframe(filtered_eval_df.sort_values('HC Share %', ascending=False).style.background_gradient(subset=['HC Share %'], cmap='Reds'), use_container_width=True)
     
     st.markdown("---")
     st.markdown("### 🔍 Deep Drill-down: 'Other' Departments")
@@ -994,24 +956,6 @@ elif nav == "forecast":
         pred_df = pd.DataFrame({'Date': future_dates, 'Type': 'Forecast (6 Months)', 'Total Volume': future_vol, 'HC Share %': future_share})
         combined = pd.concat([hist_df, pred_df], ignore_index=True)
         
-        r2_score = model_vol.score(X, ts['total_tests'])
-        confidence = "High (Stable historical pattern)" if r2_score > 0.6 else "Moderate (High variance)"
-        growth_outlook = "Positive 📈" if future_vol[-1] > ts['total_tests'].iloc[-1] else "Negative/Flat 📉"
-        
-        st.markdown(f"""
-        <div style="background-color: var(--card-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 24px; display: flex; gap: 24px; align-items: center;">
-            <div>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Growth Outlook</p>
-                <p style="margin: 0; font-weight: 600; font-size: 1.1rem;">{growth_outlook}</p>
-            </div>
-            <div style="width: 1px; height: 30px; background-color: var(--border);"></div>
-            <div>
-                <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Confidence Level</p>
-                <p style="margin: 0; font-weight: 600; font-size: 1.1rem;">{confidence}</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
         c1, c2 = st.columns(2)
         
         with c1:
@@ -1034,53 +978,32 @@ elif nav == "team":
     st.header("👨‍💻 Application Team")
     st.markdown("Meet the team responsible for building and maintaining the B2B Analytics infrastructure at Aswini Diagnostic Services.")
     
-    st.markdown("""
-    <style>
-    .team-card {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 32px 24px;
-        text-align: center;
-        transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .team-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-        border-color: #D1D5DB;
-    }
-    .team-icon {
-        font-size: 3rem; margin-bottom: 16px;
-    }
-    .team-name {
-        margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--text-main);
-    }
-    .team-role {
-        color: var(--accent); font-weight: 500; font-size: 0.95rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .team-desc {
-        color: var(--text-muted); font-size: 0.9rem; margin-top: 16px; line-height: 1.5;
-    }
-    </style>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 32px; padding-bottom: 40px;">
-        <div class="team-card">
-            <div class="team-icon">👔</div>
-            <h3 class="team-name">Mr. Harikrishnan R</h3>
-            <p class="team-role">Application Manager</p>
-            <p class="team-desc">Strategic oversight and management, ensuring the B2B platform aligns with business objectives and scalability goals.</p>
+    st.markdown("<br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    
+    with c1:
+        st.markdown(f"""
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 10px;">👔</div>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Harikrishnan R</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Manager</p>
         </div>
-        <div class="team-card">
-            <div class="team-icon">💻</div>
-            <h3 class="team-name">Mr. Mohammed Falah K</h3>
-            <p class="team-role">Application Specialist</p>
-            <p class="team-desc">Lead developer driving architectural improvements, performance optimization, and UI/UX modernization.</p>
+        """, unsafe_allow_html=True)
+        
+    with c2:
+        st.markdown(f"""
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 10px;">💻</div>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Mohammed Falah K</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
         </div>
-        <div class="team-card">
-            <div class="team-icon">🚀</div>
-            <h3 class="team-name">Mr. Nidhin U K</h3>
-            <p class="team-role">Application Specialist</p>
-            <p class="team-desc">Focused on seamless deployment, feature integration, and maintaining high availability across all instances.</p>
+        """, unsafe_allow_html=True)
+        
+    with c3:
+        st.markdown(f"""
+        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
+            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Nidhin U K</h3>
+            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
