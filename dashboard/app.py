@@ -403,16 +403,20 @@ month_labels = [pd.to_datetime(m).strftime('%B %Y') for m in months_ordered]
 # ══════════════════════════════════════════════════════════════════
 nav = st.query_params.get("nav", "executive")
 
-with st.expander("🛠️ Filter Data & Slicers", expanded=False if nav == 'team' else True):
-    c1, c2 = st.columns(2)
-    with c1:
+if nav not in ['team']:
+    with st.expander("🛠️ Filter Data & Slicers", expanded=True):
+        st.markdown("<div style='padding: 10px 0;'>", unsafe_allow_html=True)
         start_month, end_month = st.select_slider(
             '📅 Select Time Period',
             options=month_labels,
             value=(month_labels[0], month_labels[-1])
         )
-    with c2:
+        st.markdown("<br>", unsafe_allow_html=True)
         top_n = st.slider("🏢 Number of Top Institutions", min_value=5, max_value=50, value=20, step=5)
+        st.markdown("</div>", unsafe_allow_html=True)
+else:
+    start_month, end_month = month_labels[0], month_labels[-1]
+    top_n = 20
 
 # Date Filtering Logic
 start_date = pd.to_datetime(start_month, format='%B %Y')
