@@ -249,9 +249,7 @@ p, li, span, label {{
         <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
         <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
     </div>
-    
     <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 65px; z-index: 10;">
-    
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
         <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
