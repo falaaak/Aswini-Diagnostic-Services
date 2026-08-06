@@ -141,13 +141,13 @@ p, li, span, label {{
     padding: 20px !important;
     border-radius: 16px !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1) !important;
-    border: 1px solid var(--border) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 2px solid #FF69B4 !important; /* Pink Border */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
 }}
 .stMetric:hover, [data-testid="stMetric"]:hover {{
-    transform: translateY(-4px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2) !important;
-    border-color: #EA580C !important;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(138, 43, 226, 0.15), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    border-color: #8A2BE2 !important; /* Purple Border */
 }}
 
 .stPlotlyChart, .stVegaLiteChart, [data-testid="stDataFrame"] {{
@@ -155,13 +155,13 @@ p, li, span, label {{
     border-radius: 16px !important;
     padding: 10px !important;
     box-shadow: 0 8px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.05) !important;
-    border: 1px solid var(--border) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 2px solid #FF69B4 !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
 }}
 .stPlotlyChart:hover, .stVegaLiteChart:hover, [data-testid="stDataFrame"]:hover {{
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1) !important;
-    border-color: #EA580C !important;
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(138, 43, 226, 0.15), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    border-color: #8A2BE2 !important;
 }}
 
 .stMetric label {{
@@ -185,18 +185,19 @@ p, li, span, label {{
     background: var(--nav-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid var(--nav-border);
+    border-bottom: 2px solid #FF69B4;
     z-index: 999999;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 8vw;
     flex-wrap: wrap;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
-    transition: border-bottom-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-bottom-color 0.4s ease, box-shadow 0.4s ease;
 }}
 .liquid-nav:hover {{
-    border-bottom-color: #EA580C;
+    border-bottom-color: #8A2BE2;
+    box-shadow: 0 6px 30px rgba(138, 43, 226, 0.2);
 }}
 .liquid-nav a {{
     text-decoration: none;
@@ -205,53 +206,71 @@ p, li, span, label {{
     font-size: 0.95rem;
     padding: 8px 12px;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, background 0.3s ease;
     font-family: var(--font-main);
 }}
 .liquid-nav a:hover {{
-    color: var(--accent) !important;
+    color: #FF69B4 !important;
     background: var(--nav-hover-bg);
+    transform: scale(1.1) translateY(-2px);
 }}
-.nav-center {{
+.logo-mag-container {{
+    position: relative;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 12px;
-    padding: 0 15px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,20,147,0.1) 0%, rgba(138,43,226,0) 70%);
+    box-shadow: 0 4px 15px rgba(255, 20, 147, 0.2), inset 0 2px 5px rgba(138, 43, 226, 0.2);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
 }}
-.nav-center img {{
-    height: 45px;
+.logo-mag-container:hover {{
+    transform: scale(1.25);
+    box-shadow: 0 8px 25px rgba(255, 20, 147, 0.5), inset 0 3px 8px rgba(138, 43, 226, 0.6);
+}}
+.logo-mag-container img {{
+    height: 42px;
     object-fit: contain;
+}}
+[data-testid="stExpander"] summary {{
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}}
+[data-testid="stExpander"] summary:hover {{
+    transform: scale(1.02) translateX(8px) !important;
 }}
 .gdrive-btn {{
     background: var(--accent) !important;
     color: white !important;
     padding: 8px 20px !important;
     border-radius: 30px !important;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
-    border: 1px solid transparent !important;
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3) !important;
+    border: 2px solid transparent !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease, border-color 0.3s ease;
 }}
 .gdrive-btn:hover {{
-    background: var(--accent-hover) !important;
-    transform: translateY(-2px);
-    border-color: #EA580C !important;
-    box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4) !important;
+    background: #8A2BE2 !important;
+    transform: scale(1.1) translateY(-2px);
+    border-color: #FF69B4 !important;
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4) !important;
 }}
 .nav-search-input {{
     padding: 8px 15px;
     border-radius: 20px;
-    border: 1px solid var(--border);
+    border: 2px solid #FF69B4;
     background: var(--card-bg);
     color: var(--text-main);
     font-family: var(--font-main);
     outline: none;
     width: 180px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease, box-shadow 0.3s ease;
 }}
 .nav-search-input:hover, .nav-search-input:focus {{
-    border-color: #EA580C;
-    box-shadow: 0 0 8px rgba(234, 88, 12, 0.2);
+    transform: scale(1.05);
+    border-color: #8A2BE2;
+    box-shadow: 0 0 12px rgba(138, 43, 226, 0.3);
 }}
 /* Style Streamlit Tabs to look like modern pills */
 [data-baseweb="tab-list"] {{
@@ -274,12 +293,14 @@ p, li, span, label {{
     color: white !important;
 }}
 </style>
-<div class="liquid-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 0 30px;">
+<div class="liquid-nav" style="display: flex; justify-content: center; align-items: center; gap: 6vw; padding: 0 20px;">
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
         <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
     </div>
-    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 45px; z-index: 10;">
+    <div class="logo-mag-container">
+        <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png">
+    </div>
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
         <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
