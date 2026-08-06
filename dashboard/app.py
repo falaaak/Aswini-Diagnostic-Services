@@ -250,7 +250,7 @@ p, li, span, label {{
     <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
     <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
     <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
-    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing&ouid=109163273083599607293&rtpof=true&sd=true" class="gdrive-btn" target="_blank">💾 Master Data</a>
+    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">💾 Master Data</a>
     <form method="GET" style="display:inline-block; margin-left: 10px;">
         <input type="hidden" name="nav" value="{current_nav}">
         <input type="hidden" name="theme" value="{theme}">
