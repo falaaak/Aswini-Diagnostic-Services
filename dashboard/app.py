@@ -142,11 +142,12 @@ p, li, span, label {{
     border-radius: 16px !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.1) !important;
     border: 1px solid var(--border) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }}
 .stMetric:hover, [data-testid="stMetric"]:hover {{
     transform: translateY(-4px);
     box-shadow: 0 15px 35px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    border-color: #EA580C !important;
 }}
 
 .stPlotlyChart, .stVegaLiteChart, [data-testid="stDataFrame"] {{
@@ -155,6 +156,12 @@ p, li, span, label {{
     padding: 10px !important;
     box-shadow: 0 8px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.05) !important;
     border: 1px solid var(--border) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}}
+.stPlotlyChart:hover, .stVegaLiteChart:hover, [data-testid="stDataFrame"]:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+    border-color: #EA580C !important;
 }}
 
 .stMetric label {{
@@ -186,6 +193,10 @@ p, li, span, label {{
     gap: 15px;
     flex-wrap: wrap;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+    transition: border-bottom-color 0.3s ease, box-shadow 0.3s ease;
+}}
+.liquid-nav:hover {{
+    border-bottom-color: #EA580C;
 }}
 .liquid-nav a {{
     text-decoration: none;
@@ -217,11 +228,30 @@ p, li, span, label {{
     padding: 8px 20px !important;
     border-radius: 30px !important;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
-    border: none !important;
+    border: 1px solid transparent !important;
+    transition: all 0.3s ease;
 }}
 .gdrive-btn:hover {{
     background: var(--accent-hover) !important;
     transform: translateY(-2px);
+    border-color: #EA580C !important;
+    box-shadow: 0 8px 25px rgba(234, 88, 12, 0.4) !important;
+}}
+.nav-search-input {{
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-family: var(--font-main);
+    outline: none;
+    width: 180px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}}
+.nav-search-input:hover, .nav-search-input:focus {{
+    border-color: #EA580C;
+    box-shadow: 0 0 8px rgba(234, 88, 12, 0.2);
 }}
 /* Style Streamlit Tabs to look like modern pills */
 [data-baseweb="tab-list"] {{
@@ -249,7 +279,7 @@ p, li, span, label {{
         <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
         <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
     </div>
-    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 65px; z-index: 10;">
+    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 45px; z-index: 10;">
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
         <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
@@ -260,7 +290,7 @@ p, li, span, label {{
             <input type="hidden" name="nav" value="{current_nav}">
             <input type="hidden" name="theme" value="{theme}">
             <input type="hidden" name="splash" value="0">
-            <input type="text" name="search" placeholder="Search items, data..." style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: var(--font-main); outline: none; width: 180px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+            <input type="text" class="nav-search-input" name="search" placeholder="Search items, data...">
         </form>
     </div>
 </div>
