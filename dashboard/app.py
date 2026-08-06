@@ -8,6 +8,8 @@ import ast
 import operator
 import re
 
+st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
+
 theme = st.query_params.get("theme", "light")
 if theme not in ["light", "dark"]:
     theme = "light"
@@ -55,7 +57,7 @@ def render_chart(fig, **kwargs):
     fig.update_traces(textfont_size=18)
     st.plotly_chart(fig, **kwargs)
 
-st.set_page_config(page_title="Aswini B2B Analytics", page_icon="📊", layout="wide")
+
 
 current_nav = st.query_params.get("nav", "matrix")
 
