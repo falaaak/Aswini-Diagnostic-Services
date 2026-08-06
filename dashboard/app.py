@@ -244,21 +244,27 @@ p, li, span, label {{
     color: white !important;
 }}
 </style>
-<div class="liquid-nav">
-    <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
-    <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
-    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height:40px; margin:0 15px;">
-    <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
-    <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
-    <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
-    <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
-    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">💾 Master Data</a>
-    <form method="GET" style="display:inline-block; margin-left: 10px;">
-        <input type="hidden" name="nav" value="{current_nav}">
-        <input type="hidden" name="theme" value="{theme}">
-        <input type="hidden" name="splash" value="0">
-        <input type="text" name="search" placeholder="Search items, data..." style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: var(--font-main); outline: none; width: 180px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
-    </form>
+<div class="liquid-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 0 30px;">
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
+        <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
+    </div>
+    
+    <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 65px; z-index: 10;">
+    
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
+        <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
+        <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
+        <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self">{theme_icon}</a>
+        <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">💾 Master Data</a>
+        <form method="GET" style="margin: 0;">
+            <input type="hidden" name="nav" value="{current_nav}">
+            <input type="hidden" name="theme" value="{theme}">
+            <input type="hidden" name="splash" value="0">
+            <input type="text" name="search" placeholder="Search items, data..." style="padding: 8px 15px; border-radius: 20px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: var(--font-main); outline: none; width: 180px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
+        </form>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
