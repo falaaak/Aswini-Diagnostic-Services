@@ -96,8 +96,7 @@ st.markdown(f"""
 }}
 /* Push the main app content down */
 [data-testid="stAppViewBlockContainer"] {{
-    margin-top: 10px;
-    padding-right: 230px !important;
+    margin-top: 80px;
 }}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 :root{{
@@ -178,142 +177,95 @@ p, li, span, label {{
     font-size: 2rem !important;
 }}
 
-/* Right-Side Vertical Navbar */
+/* Clean Sleek Navbar */
 .liquid-nav {{
     position: fixed;
     top: 0;
-    right: 0;
-    width: 210px;
-    height: 100vh;
-    background: linear-gradient(180deg, rgba(236, 72, 153, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-left: 1px solid rgba(236, 72, 153, 0.3);
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(90deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1)), var(--nav-bg);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border-bottom: 1px solid rgba(236, 72, 153, 0.2);
     z-index: 999999;
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 20px 12px 20px 12px;
-    box-shadow: -6px 0 30px rgba(139, 92, 246, 0.08);
-    overflow-y: auto;
-    overflow-x: hidden;
-}}
-.liquid-nav::-webkit-scrollbar {{ display: none; }}
-
-.nav-logo-wrap {{
-    display: flex;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
     align-items: center;
-    padding: 10px 0 18px 0;
-    border-bottom: 1px solid rgba(236, 72, 153, 0.15);
-    margin-bottom: 16px;
+    padding: 0 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+    white-space: nowrap;
 }}
-.nav-logo-wrap img {{
-    height: 36px;
-    object-fit: contain;
+.liquid-nav::-webkit-scrollbar {{
+    display: none;
 }}
-
-.nav-search-input {{
-    width: 100%;
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(236, 72, 153, 0.3);
-    background: rgba(255,255,255,0.08);
-    color: var(--text-main);
-    font-family: var(--font-main);
-    font-size: 0.82rem;
-    outline: none;
-    box-sizing: border-box;
-    margin-bottom: 14px;
-    transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
-}}
-.nav-search-input:focus {{
-    border-color: rgba(236, 72, 153, 0.6);
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15);
-}}
-
-.nav-section-label {{
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    padding: 0 6px;
-    margin: 10px 0 4px 0;
-    opacity: 0.6;
-}}
-
 .liquid-nav a {{
     text-decoration: none;
     color: var(--text-muted);
     font-weight: 500;
-    font-size: 0.87rem;
-    padding: 9px 12px;
-    border-radius: 9px;
-    transition: all var(--transition-smooth);
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: color var(--transition-smooth), background var(--transition-smooth);
     font-family: var(--font-main);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 2px;
-    border: 1px solid transparent;
 }}
 .liquid-nav a:hover {{
     color: var(--text-main) !important;
-    background: rgba(236, 72, 153, 0.1);
-    border-color: rgba(236, 72, 153, 0.2);
-    transform: translateX(-3px);
+    background: var(--nav-hover-bg);
 }}
 .liquid-nav a.active-nav {{
     color: var(--text-main) !important;
-    background: linear-gradient(90deg, rgba(236,72,153,0.15), rgba(139,92,246,0.15));
-    border-color: rgba(236, 72, 153, 0.35);
+    background: var(--nav-hover-bg);
     font-weight: 600;
 }}
-
-.nav-bottom {{
-    margin-top: auto;
-    padding-top: 14px;
-    border-top: 1px solid rgba(236, 72, 153, 0.15);
+.logo-container {{
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}}
+.logo-container img {{
+    height: 32px;
+    object-fit: contain;
+}}
+[data-testid="stExpander"] summary {{
+    transition: background var(--transition-smooth) !important;
+}}
+[data-testid="stExpander"] summary:hover {{
+    background: var(--nav-hover-bg) !important;
 }}
 .gdrive-btn {{
-    background: linear-gradient(135deg, #EC4899, #8B5CF6) !important;
-    color: white !important;
-    padding: 9px 12px !important;
-    border-radius: 9px !important;
-    border: none !important;
-    font-size: 0.87rem !important;
+    background: var(--text-main) !important;
+    color: var(--app-bg) !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    border: 1px solid transparent !important;
+    font-size: 0.85rem !important;
     font-weight: 600 !important;
-    text-align: center;
-    justify-content: center;
-    transition: opacity 0.2s, transform 0.2s;
-    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
-    margin-bottom: 2px;
+    transition: background var(--transition-smooth), opacity var(--transition-smooth);
 }}
 .gdrive-btn:hover {{
-    opacity: 0.88 !important;
-    transform: translateX(-2px);
+    opacity: 0.9 !important;
 }}
-.theme-btn {{
-    background: rgba(255,255,255,0.07) !important;
-    border: 1px solid rgba(236, 72, 153, 0.2) !important;
-    color: var(--text-muted) !important;
-    font-size: 0.84rem !important;
-    padding: 8px 12px !important;
-    border-radius: 9px !important;
-    cursor: pointer;
-    text-align: center;
-    justify-content: center;
-    transition: all 0.2s;
+.nav-search-input {{
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-main);
+    font-family: var(--font-main);
+    font-size: 0.85rem;
+    outline: none;
+    width: 200px;
+    transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
 }}
-.theme-btn:hover {{
-    background: rgba(236,72,153,0.1) !important;
-    color: var(--text-main) !important;
+.nav-search-input:hover, .nav-search-input:focus {{
+    border-color: #9CA3AF;
+    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.2);
 }}
-/* Style Streamlit Tabs */
+/* Style Streamlit Tabs to look like modern pills */
 [data-baseweb="tab-list"] {{
     gap: 10px;
     background-color: var(--card-bg);
@@ -335,28 +287,22 @@ p, li, span, label {{
 }}
 </style>
 <div class="liquid-nav">
-    <div class="nav-logo-wrap">
+    <div class="logo-container">
         <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png">
     </div>
-
-    <form method="GET" style="margin:0;">
+    <a href="?nav=matrix&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'matrix' else ''}">B2B Matrix</a>
+    <a href="?nav=executive&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'executive' else ''}">Executive Summary</a>
+    <a href="?nav=specialty&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'specialty' else ''}">Specialty Analysis</a>
+    <a href="?nav=forecast&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'forecast' else ''}">Forecast</a>
+    <a href="?nav=team&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'team' else ''}">Team</a>
+    <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self" style="padding: 8px;">{theme_icon}</a>
+    <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">Master Data</a>
+    <form method="GET" style="margin: 0;">
         <input type="hidden" name="nav" value="{current_nav}">
         <input type="hidden" name="theme" value="{theme}">
         <input type="hidden" name="splash" value="0">
-        <input type="text" class="nav-search-input" name="search" placeholder="🔍 Search insights...">
+        <input type="text" class="nav-search-input" name="search" placeholder="Search insights...">
     </form>
-
-    <div class="nav-section-label">Navigation</div>
-    <a href="?nav=executive&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'executive' else ''}">📊 Executive Summary</a>
-    <a href="?nav=matrix&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'matrix' else ''}">🔢 B2B Matrix</a>
-    <a href="?nav=specialty&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'specialty' else ''}">👨‍⚕️ Specialty Analysis</a>
-    <a href="?nav=forecast&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'forecast' else ''}">🔮 Forecast</a>
-    <a href="?nav=team&theme={theme}&splash=0" target="_self" class="{'active-nav' if current_nav == 'team' else ''}">👨‍💻 Application Team</a>
-
-    <div class="nav-bottom">
-        <a href="?nav={current_nav}&theme={opposite_theme}&splash=0" target="_self" class="theme-btn">{theme_icon} Toggle Theme</a>
-        <a href="https://docs.google.com/spreadsheets/d/1uKVfuy_i6cZShQc4gWz69e-cYCSND6eT/edit?usp=sharing" class="gdrive-btn" target="_blank">💾 Master Data</a>
-    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -370,79 +316,69 @@ if 'splash_shown_final' not in st.session_state:
     if not skip_splash:
         splash_html = """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
         .splash-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #111;
-            background-image: radial-gradient(#444 20%, transparent 20%);
-            background-size: 8px 8px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999999;
-            animation: fadeOutSplash 1s ease-in-out forwards;
-            animation-delay: 3.5s;
+            background: #000000;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeOut 0.8s ease-in-out 1.5s forwards;
         }
-        .splash-content {
-            background: rgba(17, 17, 17, 0.85);
-            padding: 40px;
-            border: 2px solid #555;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center;
+        .splash-logo {
+            width: 280px;
+            opacity: 0;
+            position: absolute;
+            animation: showLogo 1s ease-in-out 0.2s forwards;
         }
         .splash-text-container {
-            display: inline-block;
-        }
-        .splash-text {
-            color: #fff;
-            font-family: 'VT323', monospace;
-            font-size: 48px;
-            letter-spacing: 4px;
-            margin: 0;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 4px solid #fff;
-            width: 0;
-            animation: typing 1.5s steps(30, end) forwards, blink 0.75s step-end infinite;
-            animation-delay: 0.5s;
-        }
-        .splash-sub {
-            color: #aaa;
-            font-family: 'VT323', monospace;
-            font-size: 24px;
-            letter-spacing: 2px;
-            margin-top: 10px;
+            position: absolute;
+            top: 65%;
+            text-align: center;
             opacity: 0;
-            animation: fadeInDot 0.5s steps(5, end) forwards;
-            animation-delay: 2.2s;
+            animation: showText 0.8s ease-in-out 0.8s forwards;
         }
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .splash-text-container h1 {
+            color: #FFFFFF;
+            font-family: var(--font-main);
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
-        @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: #fff }
+        .splash-text-container p {
+            color: #A78BFA;
+            font-family: var(--font-main);
+            font-size: 1.2rem;
+            margin: 0;
+            letter-spacing: 3px;
+            animation: showSubText 0.8s ease-in-out 1.2s forwards;
+            opacity: 0;
         }
-        @keyframes fadeInDot {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        @keyframes showLogo {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
-        @keyframes fadeOutSplash {
+        @keyframes showText {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes showSubText {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
             0% { opacity: 1; visibility: visible; }
             100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
         </style>
         <div class="splash-overlay">
-            <div class="splash-content">
-                <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" style="height: 50px; margin-bottom: 20px; filter: grayscale(100%) brightness(200%);">
-                <div class="splash-text-container">
-                    <div class="splash-text">ASWINI DIAGNOSTIC</div>
-                </div>
-                <div class="splash-sub">Executive Intelligence Platform</div>
+            <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png" class="splash-logo">
+            <div class="splash-text-container">
+                <h1>ADS - B2B Analysis</h1>
+                <p>by Application Team</p>
             </div>
         </div>
         """
