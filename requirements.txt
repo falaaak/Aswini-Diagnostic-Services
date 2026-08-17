@@ -5,3 +5,4 @@ python-dateutil
 numpy
 scikit-learn
 matplotlib
+openpyxl
