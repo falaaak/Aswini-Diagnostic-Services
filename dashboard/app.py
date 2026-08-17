@@ -419,6 +419,32 @@ if 'splash_shown_final' not in st.session_state:
 # DATA LOADING & PREPROCESSING
 # ══════════════════════════════════════════════════════════════════
 @st.cache_data
+def load_mrp_data():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    file_path = os.path.join(parent_dir, 'MRP 30% and  40%.xlsx')
+    
+    if os.path.exists(file_path):
+        mrp_df = pd.read_excel(file_path, header=None)
+        mrp_df = mrp_df.iloc[2:].copy() # Skip first two metadata rows
+        mrp_df = mrp_df[[1, 2]] # Column index 1 is test name, 2 is MRP
+        mrp_df.columns = ['test_name', 'MRP']
+        mrp_df = mrp_df.dropna(subset=['test_name', 'MRP'])
+        
+        # Clean test names to match master data
+        mrp_df['test_name'] = mrp_df['test_name'].astype(str).str.replace(r'^\*\s*', '', regex=True)
+        mrp_df['test_name'] = mrp_df['test_name'].str.strip().str.upper()
+        
+        # Convert MRP to numeric
+        mrp_df['MRP'] = pd.to_numeric(mrp_df['MRP'], errors='coerce')
+        mrp_df = mrp_df.dropna(subset=['MRP'])
+        
+        # In case of duplicates, keep the max MRP or first one
+        mrp_df = mrp_df.drop_duplicates(subset=['test_name'], keep='first')
+        return mrp_df
+    return pd.DataFrame(columns=['test_name', 'MRP'])
+
+@st.cache_data
 def load_data():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
@@ -469,6 +495,7 @@ def load_data():
 
 with st.spinner("Loading Aswini B2B Data..."):
     df, lal_path_df = load_data()
+    mrp_df = load_mrp_data()
 
 months_ordered = sorted(df['date'].unique())
 month_labels = [pd.to_datetime(m).strftime('%B %Y') for m in months_ordered]
@@ -844,14 +871,44 @@ elif nav == "matrix":
         ).reset_index()
         
         final_test_table = pd.merge(test_agg, test_months, on='test_name')
+        
+        # Merge with MRP Data
+        final_test_table = pd.merge(final_test_table, mrp_df, on='test_name', how='left')
+        
+        # Calculate Special Rate and Discount
+        final_test_table['Special Rate (₹)'] = final_test_table.apply(
+            lambda row: row['total_amount'] / row['total_tests'] if row['total_tests'] > 0 else 0, axis=1
+        )
+        
+        final_test_table['Discount (%)'] = final_test_table.apply(
+            lambda row: ((row['MRP'] - row['Special Rate (₹)']) / row['MRP'] * 100) if pd.notnull(row['MRP']) and row['MRP'] > 0 else None, axis=1
+        )
+        
         final_test_table = final_test_table.sort_values('total_tests', ascending=False)
+        
+        # Reorder columns to put MRP and Discount next to financial columns
+        cols = final_test_table.columns.tolist()
+        cols.remove('MRP')
+        cols.remove('Special Rate (₹)')
+        cols.remove('Discount (%)')
+        
+        ta_idx = cols.index('total_amount')
+        new_cols = cols[:ta_idx+1] + ['MRP', 'Special Rate (₹)', 'Discount (%)'] + cols[ta_idx+1:]
+        final_test_table = final_test_table[new_cols]
+        
         final_test_table = final_test_table.rename(columns={
             'test_name': 'Test Name',
             'total_tests': 'Total Tests',
-            'total_amount': 'Total Billed (₹)'
+            'total_amount': 'Total Billed (₹)',
+            'MRP': 'MRP (₹)'
         })
         
-        st.dataframe(final_test_table.style.format({'Total Billed (₹)': '{:,.2f}'}), use_container_width=True, hide_index=True)
+        st.dataframe(final_test_table.style.format({
+            'Total Billed (₹)': '{:,.2f}',
+            'MRP (₹)': '{:,.2f}',
+            'Special Rate (₹)': '{:,.2f}',
+            'Discount (%)': '{:.1f}%'
+        }, na_rep='-'), use_container_width=True, hide_index=True)
     else:
         st.info("No data available for the selected filters.")
 
