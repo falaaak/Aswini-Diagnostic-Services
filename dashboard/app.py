@@ -822,7 +822,7 @@ elif nav == "matrix":
         test_inst_filter = st.multiselect("🏢 Filter by Top Institution", options=test_inst_opts, default=test_inst_opts[:3] if len(test_inst_opts) > 3 else test_inst_opts)
     with tc2:
         test_month_opts = top_df['report_month'].dropna().unique().tolist()
-        test_month_filter = st.multiselect("🗓️ Filter by Month", options=test_month_opts, default=test_month_opts)
+        test_month_filter = st.multiselect("🗓️ Filter by Month", options=test_month_opts, default=test_month_opts, key="test_range_month_filter")
         
     test_range_df = top_df[
         (top_df['institution_name'].isin(test_inst_filter)) &
