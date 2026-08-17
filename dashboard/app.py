@@ -441,6 +441,19 @@ def load_mrp_data(main_tests):
                 clean_name = clean_name[1:].strip()
             mrp_dict[clean_name] = row['MRP']
             
+        # Fallbacks for missing MRPs
+        fallbacks = {
+            'COMPLETE HAEMOGRAM': 250,
+            'C.C.C-(COMPLETE CELL COUNT)': 200,
+            'HPE SPECIAL STAIN -PAS': 180
+        }
+        for k, v in fallbacks.items():
+            clean_name = str(k).strip().upper().replace('$', '')
+            if clean_name.startswith('*'):
+                clean_name = clean_name[1:].strip()
+            if clean_name not in mrp_dict:
+                mrp_dict[clean_name] = v
+                
         mrp_choices = list(mrp_dict.keys())
         
         mapped_data = []
@@ -858,20 +871,20 @@ elif nav == "matrix":
         render_chart(fig_drill, use_container_width=True)
         
     st.markdown("---")
-    st.subheader("🔬 Range of Tests Billed by Top Institutions")
-    st.markdown("Filter down the range of tests by institution and month to see volume and revenue breakdowns per test. The data is based on your global Top Institution slider.")
+    st.subheader("🔬 Range of Tests Billed (All Institutions)")
+    st.markdown("Filter down the range of tests by institution and month to see volume and revenue breakdowns per test. This data represents ALL partners across your selected global time period.")
     
     tc1, tc2 = st.columns(2)
     with tc1:
-        test_inst_opts = top_df['institution_name'].dropna().unique().tolist()
-        test_inst_filter = st.multiselect("🏢 Filter by Top Institution", options=test_inst_opts, default=test_inst_opts[:3] if len(test_inst_opts) > 3 else test_inst_opts)
+        test_inst_opts = filtered_df['institution_name'].dropna().unique().tolist()
+        test_inst_filter = st.multiselect("🏢 Filter by Institution", options=test_inst_opts, default=test_inst_opts[:3] if len(test_inst_opts) > 3 else test_inst_opts)
     with tc2:
-        test_month_opts = top_df['report_month'].dropna().unique().tolist()
+        test_month_opts = filtered_df['report_month'].dropna().unique().tolist()
         test_month_filter = st.multiselect("🗓️ Filter by Month", options=test_month_opts, default=test_month_opts, key="test_range_month_filter")
         
-    test_range_df = top_df[
-        (top_df['institution_name'].isin(test_inst_filter)) &
-        (top_df['report_month'].isin(test_month_filter))
+    test_range_df = filtered_df[
+        (filtered_df['institution_name'].isin(test_inst_filter)) &
+        (filtered_df['report_month'].isin(test_month_filter))
     ]
     
     if not test_range_df.empty:
