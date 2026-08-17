@@ -813,6 +813,49 @@ elif nav == "matrix":
         render_chart(fig_drill, use_container_width=True)
         
     st.markdown("---")
+    st.subheader("🔬 Range of Tests Billed by Top Institutions")
+    st.markdown("Filter down the range of tests by institution and month to see volume and revenue breakdowns per test. The data is based on your global Top Institution slider.")
+    
+    tc1, tc2 = st.columns(2)
+    with tc1:
+        test_inst_opts = top_df['institution_name'].dropna().unique().tolist()
+        test_inst_filter = st.multiselect("🏢 Filter by Top Institution", options=test_inst_opts, default=test_inst_opts[:3] if len(test_inst_opts) > 3 else test_inst_opts)
+    with tc2:
+        test_month_opts = top_df['report_month'].dropna().unique().tolist()
+        test_month_filter = st.multiselect("🗓️ Filter by Month", options=test_month_opts, default=test_month_opts)
+        
+    test_range_df = top_df[
+        (top_df['institution_name'].isin(test_inst_filter)) &
+        (top_df['report_month'].isin(test_month_filter))
+    ]
+    
+    if not test_range_df.empty:
+        test_agg = test_range_df.groupby('test_name').agg(
+            total_tests=('test_count', 'sum'),
+            total_amount=('total_bill_amount', 'sum')
+        ).reset_index()
+        
+        test_months = test_range_df.pivot_table(
+            index='test_name',
+            columns='report_month',
+            values='test_count',
+            aggfunc='sum',
+            fill_value=0
+        ).reset_index()
+        
+        final_test_table = pd.merge(test_agg, test_months, on='test_name')
+        final_test_table = final_test_table.sort_values('total_tests', ascending=False)
+        final_test_table = final_test_table.rename(columns={
+            'test_name': 'Test Name',
+            'total_tests': 'Total Tests',
+            'total_amount': 'Total Billed (₹)'
+        })
+        
+        st.dataframe(final_test_table.style.format({'Total Billed (₹)': '{:,.2f}'}), use_container_width=True, hide_index=True)
+    else:
+        st.info("No data available for the selected filters.")
+
+    st.markdown("---")
     st.subheader("💡 Special Insight: Dr. Lal Path Labs")
     
     lal_rev = lal_path_df['total_bill_amount'].sum()
