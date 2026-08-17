@@ -419,29 +419,46 @@ if 'splash_shown_final' not in st.session_state:
 # DATA LOADING & PREPROCESSING
 # ══════════════════════════════════════════════════════════════════
 @st.cache_data
-def load_mrp_data():
+def load_mrp_data(main_tests):
+    import difflib
     current_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(current_dir)
     file_path = os.path.join(parent_dir, 'MRP 30% and  40%.xlsx')
     
     if os.path.exists(file_path):
         mrp_df = pd.read_excel(file_path, header=None)
-        mrp_df = mrp_df.iloc[2:].copy() # Skip first two metadata rows
-        mrp_df = mrp_df[[1, 2]] # Column index 1 is test name, 2 is MRP
-        mrp_df.columns = ['test_name', 'MRP']
-        mrp_df = mrp_df.dropna(subset=['test_name', 'MRP'])
-        
-        # Clean test names to match master data
-        mrp_df['test_name'] = mrp_df['test_name'].astype(str).str.replace(r'^\*\s*', '', regex=True)
-        mrp_df['test_name'] = mrp_df['test_name'].str.strip().str.upper()
-        
-        # Convert MRP to numeric
+        mrp_df = mrp_df.iloc[2:].copy()
+        mrp_df = mrp_df[[1, 2]]
+        mrp_df.columns = ['mrp_test_name', 'MRP']
+        mrp_df = mrp_df.dropna(subset=['mrp_test_name', 'MRP'])
         mrp_df['MRP'] = pd.to_numeric(mrp_df['MRP'], errors='coerce')
         mrp_df = mrp_df.dropna(subset=['MRP'])
         
-        # In case of duplicates, keep the max MRP or first one
-        mrp_df = mrp_df.drop_duplicates(subset=['test_name'], keep='first')
-        return mrp_df
+        mrp_dict = {}
+        for _, row in mrp_df.iterrows():
+            clean_name = str(row['mrp_test_name']).strip().upper().replace('$', '')
+            if clean_name.startswith('*'):
+                clean_name = clean_name[1:].strip()
+            mrp_dict[clean_name] = row['MRP']
+            
+        mrp_choices = list(mrp_dict.keys())
+        
+        mapped_data = []
+        for t in main_tests:
+            clean_t = str(t).strip().upper().replace('$', '')
+            if clean_t.startswith('*'):
+                clean_t = clean_t[1:].strip()
+            
+            if clean_t in mrp_dict:
+                mapped_data.append({'test_name': t, 'MRP': mrp_dict[clean_t]})
+                continue
+                
+            matches = difflib.get_close_matches(clean_t, mrp_choices, n=1, cutoff=0.8)
+            if matches:
+                mapped_data.append({'test_name': t, 'MRP': mrp_dict[matches[0]]})
+                
+        return pd.DataFrame(mapped_data)
+        
     return pd.DataFrame(columns=['test_name', 'MRP'])
 
 @st.cache_data
@@ -495,7 +512,8 @@ def load_data():
 
 with st.spinner("Loading Aswini B2B Data..."):
     df, lal_path_df = load_data()
-    mrp_df = load_mrp_data()
+    main_tests = df['test_name'].dropna().unique().tolist()
+    mrp_df = load_mrp_data(main_tests)
 
 months_ordered = sorted(df['date'].unique())
 month_labels = [pd.to_datetime(m).strftime('%B %Y') for m in months_ordered]
