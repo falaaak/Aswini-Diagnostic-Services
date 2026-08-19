@@ -329,7 +329,6 @@ p, li, span, label {{
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=specialty&theme={theme}&splash=0" target="_self">👨‍⚕️ Specialty Analysis</a>
         <a href="?nav=forecast&theme={theme}&splash=0" target="_self">🔮 Forecast</a>
-        <a href="?nav=team&theme={theme}&splash=0" target="_self">👨‍💻 Application Team</a>
     </div>
 </div>
 <div class="liquid-subnav">
@@ -1298,36 +1297,3 @@ elif nav == "partners":
         else:
             st.info("No data available for the selected time period.")
 
-elif nav == "team":
-    st.header("👨‍💻 Application Team")
-    st.markdown("Meet the team responsible for building and maintaining the B2B Analytics infrastructure at Aswini Diagnostic Services.")
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    
-    with c1:
-        st.markdown(f"""
-        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
-            <div style="font-size: 3rem; margin-bottom: 10px;">👔</div>
-            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Harikrishnan R</h3>
-            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Manager</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with c2:
-        st.markdown(f"""
-        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
-            <div style="font-size: 3rem; margin-bottom: 10px;">💻</div>
-            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Mohammed Falah K</h3>
-            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with c3:
-        st.markdown(f"""
-        <div style="background-color: var(--card-bg); padding: 25px; border-radius: 12px; border-top: 5px solid #EA580C; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border);">
-            <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
-            <h3 style="margin: 0; color: #EA580C !important; font-size: 1.3rem;">Mr. Nidhin U K</h3>
-            <p style="color: var(--text-muted); font-weight: 500; margin-top: 5px;">Application Specialist</p>
-        </div>
-        """, unsafe_allow_html=True)
