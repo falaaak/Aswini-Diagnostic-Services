@@ -1181,31 +1181,12 @@ elif nav == "partners":
             total_mrp_value = (inst_df['MRP'].fillna(0) * inst_df['test_count']).sum()
             discount_pct = ((total_mrp_value - total_rev) / total_mrp_value * 100) if total_mrp_value > 0 else 0
             
-            # Growth forecast (using monthly test count)
-            monthly = inst_df.groupby('report_month')['test_count'].sum().reset_index()
-            # Sort by actual date to ensure correct slope
-            monthly['date'] = pd.to_datetime(monthly['report_month'], format='%B %Y')
-            monthly = monthly.sort_values('date')
-            
-            if len(monthly) > 1:
-                from scipy.stats import linregress
-                x = np.arange(len(monthly))
-                y = monthly['test_count'].values
-                slope, intercept, _, _, _ = linregress(x, y)
-                growth_rate = slope
-                proj_6m = max(0, slope * (len(monthly) + 5) + intercept)
-            else:
-                growth_rate = 0
-                proj_6m = total_vol
-                
             inst_metrics.append({
                 'Institution': inst,
                 'Total Billed (₹)': total_rev,
                 'Total Volume': total_vol,
                 'Avg Discount (%)': discount_pct,
                 'Histo Share (%)': hc_share,
-                'Growth Rate': growth_rate,
-                'Projected Volume (6M)': proj_6m,
                 'Unique Depts': unique_depts,
                 'Avg Rev/Test': arpt
             })
@@ -1237,9 +1218,9 @@ elif nav == "partners":
             pdf.loc[pdf['Score'] >= 65, 'Tier'] = 'Tier 1'
             pdf.loc[(pdf['Score'] < 65) & (pdf['Score'] >= 35), 'Tier'] = 'Tier 2'
             
-            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
-            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
-            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
+            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
+            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
+            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
             
             tab1, tab2, tab3 = st.tabs([f"🥇 Tier 1 (Elite) [{len(t1_df)}]", f"🥈 Tier 2 (Core) [{len(t2_df)}]", f"🥉 Tier 3 (Developing) [{len(t3_df)}]"])
             
@@ -1256,7 +1237,6 @@ elif nav == "partners":
                         'Total Volume': '{:,}',
                         'Avg Discount (%)': '{:.1f}%',
                         'Histo Share (%)': '{:.1f}%',
-                        'Projected Volume (6M)': '{:,.0f}',
                         'Unique Depts': '{:,.0f}',
                         'Avg Rev/Test': '₹ {:,.1f}',
                         'Score': '{:.1f}'
@@ -1306,11 +1286,10 @@ elif nav == "partners":
                 col3.metric("Avg Discount", f"{p_data['Avg Discount (%)']:.1f}%")
                 col4.metric("Avg Rev/Test", f"₹ {p_data['Avg Rev/Test']:.1f}")
                 
-                col5, col6, col7, col8 = st.columns(4)
+                col5, col6, col7 = st.columns(3)
                 col5.metric("Current Volume", f"{p_data['Total Volume']:,}")
-                col6.metric("6M Projected Vol", f"{p_data['Projected Volume (6M)']:,.0f}")
-                col7.metric("Histo Share", f"{p_data['Histo Share (%)']:.1f}%")
-                col8.metric("Unique Depts", f"{p_data['Unique Depts']:.0f}")
+                col6.metric("Histo Share", f"{p_data['Histo Share (%)']:.1f}%")
+                col7.metric("Unique Depts", f"{p_data['Unique Depts']:.0f}")
         else:
             st.info("No data available for the selected time period.")
 
