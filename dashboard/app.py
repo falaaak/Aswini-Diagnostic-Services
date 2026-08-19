@@ -1174,6 +1174,9 @@ elif nav == "partners":
             hc_vol = inst_df[inst_df['histo_cyto_group'] == 'Histopathology & Cytopathology']['test_count'].sum()
             hc_share = (hc_vol / total_vol) * 100
             
+            unique_depts = inst_df['department'].nunique()
+            arpt = total_rev / total_vol if total_vol > 0 else 0
+            
             # Discount %
             total_mrp_value = (inst_df['MRP'].fillna(0) * inst_df['test_count']).sum()
             discount_pct = ((total_mrp_value - total_rev) / total_mrp_value * 100) if total_mrp_value > 0 else 0
@@ -1202,34 +1205,38 @@ elif nav == "partners":
                 'Avg Discount (%)': discount_pct,
                 'Histo Share (%)': hc_share,
                 'Growth Rate': growth_rate,
-                'Projected Volume (6M)': proj_6m
+                'Projected Volume (6M)': proj_6m,
+                'Unique Depts': unique_depts,
+                'Avg Rev/Test': arpt
             })
             
         pdf = pd.DataFrame(inst_metrics)
         
         if not pdf.empty:
-            # Calculate Score (0-100)
-            def normalize(s):
-                return (s - s.min()) / (s.max() - s.min()) if s.max() > s.min() else s * 0
+            # Calculate Percentile Score (0-100) based on ranking
+            def to_percentile(series):
+                return series.rank(pct=True) * 100
                 
-            # For discount, lower is better, so invert it
-            inv_discount = 100 - pdf['Avg Discount (%)']
+            # For discount, lower is better, so rank descending (lower discount = higher percentile)
+            inv_discount_pctile = pdf['Avg Discount (%)'].rank(ascending=False, pct=True) * 100
             
             pdf['Score'] = (
-                normalize(pdf['Total Billed (₹)']) * 30 +
-                normalize(pdf['Total Volume']) * 20 +
-                normalize(inv_discount) * 25 +
-                np.clip(normalize(pdf['Growth Rate']), 0, 1) * 15 +
-                normalize(pdf['Histo Share (%)']) * 10
+                to_percentile(pdf['Total Billed (₹)']) * 0.25 +
+                inv_discount_pctile * 0.20 +
+                to_percentile(pdf['Total Volume']) * 0.15 +
+                to_percentile(pdf['Growth Rate']) * 0.15 +
+                to_percentile(pdf['Unique Depts']) * 0.10 +
+                to_percentile(pdf['Avg Rev/Test']) * 0.10 +
+                to_percentile(pdf['Histo Share (%)']) * 0.05
             )
             
             pdf['Score'] = pdf['Score'].round(1)
             pdf = pdf.sort_values('Score', ascending=False)
             
-            # Assign Tiers
+            # Assign Tiers (Relaxed Cutoffs)
             pdf['Tier'] = 'Tier 3'
-            pdf.loc[pdf['Score'] >= 70, 'Tier'] = 'Tier 1'
-            pdf.loc[(pdf['Score'] < 70) & (pdf['Score'] >= 40), 'Tier'] = 'Tier 2'
+            pdf.loc[pdf['Score'] >= 65, 'Tier'] = 'Tier 1'
+            pdf.loc[(pdf['Score'] < 65) & (pdf['Score'] >= 35), 'Tier'] = 'Tier 2'
             
             t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
             t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
@@ -1251,6 +1258,8 @@ elif nav == "partners":
                         'Avg Discount (%)': '{:.1f}%',
                         'Histo Share (%)': '{:.1f}%',
                         'Projected Volume (6M)': '{:,.0f}',
+                        'Unique Depts': '{:,.0f}',
+                        'Avg Rev/Test': '₹ {:,.1f}',
                         'Score': '{:.1f}'
                     }).background_gradient(subset=['Score'], cmap='Greens'),
                     use_container_width=True,
@@ -1290,15 +1299,19 @@ elif nav == "partners":
             search_inst = st.selectbox("Select an Institution to view Total Parameters", options=pdf['Institution'].tolist(), index=default_idx)
             if search_inst:
                 p_data = pdf[pdf['Institution'] == search_inst].iloc[0]
-                col1, col2, col3 = st.columns(3)
+                
+                # We'll use 4 columns to fit everything
+                col1, col2, col3, col4 = st.columns(4)
                 col1.metric("Tier & Score", f"{p_data['Tier']} ({p_data['Score']}/100)")
                 col2.metric("Total Billed", f"₹ {p_data['Total Billed (₹)']:,.0f}")
                 col3.metric("Avg Discount", f"{p_data['Avg Discount (%)']:.1f}%")
+                col4.metric("Avg Rev/Test", f"₹ {p_data['Avg Rev/Test']:.1f}")
                 
-                col4, col5, col6 = st.columns(3)
-                col4.metric("Current Volume", f"{p_data['Total Volume']:,}")
-                col5.metric("6M Projected Volume", f"{p_data['Projected Volume (6M)']:,.0f}")
-                col6.metric("Histo Share", f"{p_data['Histo Share (%)']:.1f}%")
+                col5, col6, col7, col8 = st.columns(4)
+                col5.metric("Current Volume", f"{p_data['Total Volume']:,}")
+                col6.metric("6M Projected Vol", f"{p_data['Projected Volume (6M)']:,.0f}")
+                col7.metric("Histo Share", f"{p_data['Histo Share (%)']:.1f}%")
+                col8.metric("Unique Depts", f"{p_data['Unique Depts']:.0f}")
         else:
             st.info("No data available for the selected time period.")
 
