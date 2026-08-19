@@ -1222,12 +1222,11 @@ elif nav == "partners":
             
             pdf['Score'] = (
                 to_percentile(pdf['Total Billed (₹)']) * 0.25 +
-                inv_discount_pctile * 0.20 +
-                to_percentile(pdf['Total Volume']) * 0.15 +
-                to_percentile(pdf['Growth Rate']) * 0.15 +
+                inv_discount_pctile * 0.15 +
+                to_percentile(pdf['Total Volume']) * 0.20 +
                 to_percentile(pdf['Unique Depts']) * 0.10 +
                 to_percentile(pdf['Avg Rev/Test']) * 0.10 +
-                to_percentile(pdf['Histo Share (%)']) * 0.05
+                to_percentile(pdf['Histo Share (%)']) * 0.20
             )
             
             pdf['Score'] = pdf['Score'].round(1)
