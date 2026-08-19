@@ -1231,17 +1231,20 @@ elif nav == "partners":
             pdf.loc[pdf['Score'] >= 70, 'Tier'] = 'Tier 1'
             pdf.loc[(pdf['Score'] < 70) & (pdf['Score'] >= 40), 'Tier'] = 'Tier 2'
             
-            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Tier'])
-            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Tier'])
-            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Tier'])
+            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
+            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
+            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Tier']).reset_index(drop=True)
             
             tab1, tab2, tab3 = st.tabs([f"🥇 Tier 1 (Elite) [{len(t1_df)}]", f"🥈 Tier 2 (Core) [{len(t2_df)}]", f"🥉 Tier 3 (Developing) [{len(t3_df)}]"])
             
-            def render_tier_table(df_tier):
+            selected_inst_from_table = None
+            
+            def render_tier_table(df_tier, key_name):
                 if df_tier.empty:
                     st.info("No partners in this tier.")
-                    return
-                st.dataframe(
+                    return None
+                    
+                event = st.dataframe(
                     df_tier.style.format({
                         'Total Billed (₹)': '{:,.0f}',
                         'Total Volume': '{:,}',
@@ -1251,24 +1254,40 @@ elif nav == "partners":
                         'Score': '{:.1f}'
                     }).background_gradient(subset=['Score'], cmap='Greens'),
                     use_container_width=True,
-                    hide_index=True
+                    hide_index=True,
+                    on_select="rerun",
+                    selection_mode="single-row",
+                    key=key_name
                 )
+                
+                if event and hasattr(event, 'selection') and event.selection.get('rows'):
+                    row_idx = event.selection['rows'][0]
+                    return df_tier.iloc[row_idx]['Institution']
+                return None
             
             with tab1:
                 st.markdown("**Tier 1 Partners:** High revenue, strong volume, and solid growth trajectories.")
-                render_tier_table(t1_df)
+                sel1 = render_tier_table(t1_df, "t1_table")
+                if sel1: selected_inst_from_table = sel1
                 
             with tab2:
                 st.markdown("**Tier 2 Partners:** Steady performers forming the core of the B2B network.")
-                render_tier_table(t2_df)
+                sel2 = render_tier_table(t2_df, "t2_table")
+                if sel2: selected_inst_from_table = sel2
                 
             with tab3:
                 st.markdown("**Tier 3 Partners:** Developing accounts that require strategic nurturing or renegotiation of discount structures.")
-                render_tier_table(t3_df)
+                sel3 = render_tier_table(t3_df, "t3_table")
+                if sel3: selected_inst_from_table = sel3
                 
             st.markdown("---")
             st.subheader("🔍 Deep Dive: Selected Partner Performance")
-            search_inst = st.selectbox("Select an Institution to view Total Parameters", options=pdf['Institution'].tolist())
+            
+            default_idx = 0
+            if selected_inst_from_table and selected_inst_from_table in pdf['Institution'].tolist():
+                default_idx = pdf['Institution'].tolist().index(selected_inst_from_table)
+                
+            search_inst = st.selectbox("Select an Institution to view Total Parameters", options=pdf['Institution'].tolist(), index=default_idx)
             if search_inst:
                 p_data = pdf[pdf['Institution'] == search_inst].iloc[0]
                 col1, col2, col3 = st.columns(3)
