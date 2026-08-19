@@ -321,6 +321,7 @@ p, li, span, label {{
     <div style="display: flex; gap: 15px; align-items: center;">
         <a href="?nav=matrix&theme={theme}&splash=0" target="_self">📊 B2B Matrix</a>
         <a href="?nav=executive&theme={theme}&splash=0" target="_self">📈 Executive Summary</a>
+        <a href="?nav=partners&theme={theme}&splash=0" target="_self">🤝 Partner Relationship</a>
     </div>
     <div class="logo-mag-container">
         <img src="https://www.aswinicalicut.net/assets/img/logo/logo.png">
@@ -445,7 +446,51 @@ def load_mrp_data(main_tests):
         fallbacks = {
             'COMPLETE HAEMOGRAM': 250,
             'C.C.C-(COMPLETE CELL COUNT)': 200,
-            'HPE SPECIAL STAIN -PAS': 180
+            'HPE SPECIAL STAIN -PAS': 180,
+            'RENIN- ALDOSTERONE': 4500,
+            'SHIGELLA PCR': 2750,
+            'DRUGS OF ABUSE PANEL-12 DRUGS': 3000,
+            'FECAL CAL PROTECTIN': 3000,
+            'LIVER - LINE IMMUNE ASSAY': 3500,
+            'AUTOIMMUNE LIVER PROFILE I & II': 5300,
+            'INHALATION ALLERGY PANEL': 5000,
+            'PAEDIATRIC ALLERGY PANEL': 6000,
+            '17 ALPHA OHP': 1000,
+            'PIVKA II': 3100,
+            'ASMA': 1100,
+            'AMA': 1100,
+            'LKM 1': 1500,
+            'ACHR (IGG)': 2820,
+            'PROCALCITONIN': 2400,
+            'MDMA': 500,
+            'INFLUENZA A&B RTPCR': 2400,
+            'MENINGITIS & ENCEPHILITIS PANEL': 10000,
+            'JAK 2 V617F MUTATION DETECTION': 5000,
+            'JAK 2 EXON 12 MUTATION DETECTION': 4400,
+            'CMV QUANTITATIVE PCR': 4500,
+            'H. PYLORI RAPID STOOL TEST': 550,
+            'MICRO SATELLITE INSTABILITY PANEL': 8400,
+            'FOOD ALLERGY PANEL - 64 ALLERGENS': 5000,
+            'TRUENAT H1N1 PCR': 3200,
+            'HBV PCR': 3500,
+            'TRUENAT HLA B27 PCR': 3100,
+            'TRUENAT HPV PCR': 2700,
+            'TRUENAT HIV-1/HIV-2 VIRAL LOAD ASSAY': 2500,
+            'TRUENAT LEPTOSPIRA-REAL TIME RTPCR': 2000,
+            'SARS COV-2 RTPCR': 300,
+            'MYOSITIS PANEL': 8000,
+            'GENE EXPERT MTB RIF ULTRA': 2415,
+            'TB GOLD': 2700,
+            'PROTEIN C': 3000,
+            'PROTEIN S': 4600,
+            'ANTITHROMBIN III': 2000,
+            'CHLAMYDIA - NEISSERIA DUPLEX PCR': 3700,
+            'TSH RECEPTOR ANTIBODY': 3000,
+            'HIGH SENSITIVITY CRP': 700,
+            'NT PRO BNP': 2700,
+            'IGF 1': 2500,
+            'CYSTATIN C': 2000,
+            'EXTENDED DOUBLE MARKER': 3200
         }
         for k, v in fallbacks.items():
             clean_name = str(k).strip().upper().replace('$', '')
@@ -1105,6 +1150,139 @@ elif nav == "forecast":
 # ══════════════════════════════════════════════════════════════════
 # APPLICATION TEAM
 # ══════════════════════════════════════════════════════════════════
+elif nav == "partners":
+    st.header("🤝 Partner Relationship Management")
+    st.markdown("Evaluate and categorize B2B partners into tiers based on a composite score combining Revenue, Volume, Profitability (Discount %), Histopathology share, and 6-Month Projected Growth.")
+    
+    # We use filtered_df which is already filtered by the global month slider
+    # Let's compute metrics for all institutions in filtered_df
+    
+    with st.spinner("Analyzing Partner Ecosystem & Forecasting Growth..."):
+        inst_metrics = []
+        
+        # Pre-merge MRP for fast discount calculation
+        df_mrp = pd.merge(filtered_df, mrp_df, on='test_name', how='left')
+        
+        # Calculate per-institution metrics
+        for inst, inst_df in df_mrp.groupby('institution_name'):
+            total_rev = inst_df['total_bill_amount'].sum()
+            total_vol = inst_df['test_count'].sum()
+            
+            if total_vol == 0:
+                continue
+                
+            hc_vol = inst_df[inst_df['histo_cyto_group'] == 'Histopathology & Cytopathology']['test_count'].sum()
+            hc_share = (hc_vol / total_vol) * 100
+            
+            # Discount %
+            total_mrp_value = (inst_df['MRP'].fillna(0) * inst_df['test_count']).sum()
+            discount_pct = ((total_mrp_value - total_rev) / total_mrp_value * 100) if total_mrp_value > 0 else 0
+            
+            # Growth forecast (using monthly test count)
+            monthly = inst_df.groupby('report_month')['test_count'].sum().reset_index()
+            # Sort by actual date to ensure correct slope
+            monthly['date'] = pd.to_datetime(monthly['report_month'], format='%B %Y')
+            monthly = monthly.sort_values('date')
+            
+            if len(monthly) > 1:
+                from scipy.stats import linregress
+                x = np.arange(len(monthly))
+                y = monthly['test_count'].values
+                slope, intercept, _, _, _ = linregress(x, y)
+                growth_rate = slope
+                proj_6m = max(0, slope * (len(monthly) + 5) + intercept)
+            else:
+                growth_rate = 0
+                proj_6m = total_vol
+                
+            inst_metrics.append({
+                'Institution': inst,
+                'Total Billed (₹)': total_rev,
+                'Total Volume': total_vol,
+                'Avg Discount (%)': discount_pct,
+                'Histo Share (%)': hc_share,
+                'Growth Rate': growth_rate,
+                'Projected Volume (6M)': proj_6m
+            })
+            
+        pdf = pd.DataFrame(inst_metrics)
+        
+        if not pdf.empty:
+            # Calculate Score (0-100)
+            def normalize(s):
+                return (s - s.min()) / (s.max() - s.min()) if s.max() > s.min() else s * 0
+                
+            # For discount, lower is better, so invert it
+            inv_discount = 100 - pdf['Avg Discount (%)']
+            
+            pdf['Score'] = (
+                normalize(pdf['Total Billed (₹)']) * 30 +
+                normalize(pdf['Total Volume']) * 20 +
+                normalize(inv_discount) * 25 +
+                np.clip(normalize(pdf['Growth Rate']), 0, 1) * 15 +
+                normalize(pdf['Histo Share (%)']) * 10
+            )
+            
+            pdf['Score'] = pdf['Score'].round(1)
+            pdf = pdf.sort_values('Score', ascending=False)
+            
+            # Assign Tiers
+            pdf['Tier'] = 'Tier 3'
+            pdf.loc[pdf['Score'] >= 70, 'Tier'] = 'Tier 1'
+            pdf.loc[(pdf['Score'] < 70) & (pdf['Score'] >= 40), 'Tier'] = 'Tier 2'
+            
+            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Tier'])
+            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Tier'])
+            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Tier'])
+            
+            tab1, tab2, tab3 = st.tabs([f"🥇 Tier 1 (Elite) [{len(t1_df)}]", f"🥈 Tier 2 (Core) [{len(t2_df)}]", f"🥉 Tier 3 (Developing) [{len(t3_df)}]"])
+            
+            def render_tier_table(df_tier):
+                if df_tier.empty:
+                    st.info("No partners in this tier.")
+                    return
+                st.dataframe(
+                    df_tier.style.format({
+                        'Total Billed (₹)': '{:,.0f}',
+                        'Total Volume': '{:,}',
+                        'Avg Discount (%)': '{:.1f}%',
+                        'Histo Share (%)': '{:.1f}%',
+                        'Projected Volume (6M)': '{:,.0f}',
+                        'Score': '{:.1f}'
+                    }).background_gradient(subset=['Score'], cmap='Greens'),
+                    use_container_width=True,
+                    hide_index=True
+                )
+            
+            with tab1:
+                st.markdown("**Tier 1 Partners:** High revenue, strong volume, and solid growth trajectories.")
+                render_tier_table(t1_df)
+                
+            with tab2:
+                st.markdown("**Tier 2 Partners:** Steady performers forming the core of the B2B network.")
+                render_tier_table(t2_df)
+                
+            with tab3:
+                st.markdown("**Tier 3 Partners:** Developing accounts that require strategic nurturing or renegotiation of discount structures.")
+                render_tier_table(t3_df)
+                
+            st.markdown("---")
+            st.subheader("🔍 Deep Dive: Selected Partner Performance")
+            search_inst = st.selectbox("Select an Institution to view Total Parameters", options=pdf['Institution'].tolist())
+            if search_inst:
+                p_data = pdf[pdf['Institution'] == search_inst].iloc[0]
+                col1, col2, col3 = st.columns(3)
+                col1.metric("Tier & Score", f"{p_data['Tier']} ({p_data['Score']}/100)")
+                col2.metric("Total Billed", f"₹ {p_data['Total Billed (₹)']:,.0f}")
+                col3.metric("Avg Discount", f"{p_data['Avg Discount (%)']:.1f}%")
+                
+                col4, col5, col6 = st.columns(3)
+                col4.metric("Current Volume", f"{p_data['Total Volume']:,}")
+                col5.metric("6M Projected Volume", f"{p_data['Projected Volume (6M)']:,.0f}")
+                col6.metric("Histo Share", f"{p_data['Histo Share (%)']:.1f}%")
+        else:
+            st.info("No data available for the selected time period.")
+
 elif nav == "team":
     st.header("👨‍💻 Application Team")
     st.markdown("Meet the team responsible for building and maintaining the B2B Analytics infrastructure at Aswini Diagnostic Services.")
