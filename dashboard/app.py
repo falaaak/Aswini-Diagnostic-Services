@@ -968,8 +968,12 @@ elif nav == "matrix":
         cols.remove('Special Rate (₹)')
         cols.remove('Discount (%)')
         
-        ta_idx = cols.index('total_amount')
-        new_cols = cols[:ta_idx+1] + ['MRP', 'Special Rate (₹)', 'Discount (%)'] + cols[ta_idx+1:]
+        month_cols = [c for c in cols if c not in ['test_name', 'total_tests', 'total_amount']]
+        # Sort months chronologically
+        month_cols = sorted(month_cols, key=lambda d: pd.to_datetime(d, format='%B %Y', errors='coerce'))
+        
+        # Structure: Base metrics -> Financial metrics -> Chronological Months
+        new_cols = ['test_name', 'total_tests', 'total_amount', 'MRP', 'Special Rate (₹)', 'Discount (%)'] + month_cols
         final_test_table = final_test_table[new_cols]
         
         final_test_table = final_test_table.rename(columns={
@@ -1198,16 +1202,17 @@ elif nav == "partners":
             def to_percentile(series):
                 return series.rank(pct=True) * 100
                 
-            # For discount, lower is better, so rank descending (lower discount = higher percentile)
+            # For discount and Histo Share, lower is better, so rank descending (lower = higher percentile)
             inv_discount_pctile = pdf['Avg Discount (%)'].rank(ascending=False, pct=True) * 100
+            inv_histo_pctile = pdf['Histo Share (%)'].rank(ascending=False, pct=True) * 100
             
             pdf['Score'] = (
-                to_percentile(pdf['Total Billed (₹)']) * 0.25 +
+                to_percentile(pdf['Total Billed (₹)']) * 0.30 +
                 inv_discount_pctile * 0.15 +
                 to_percentile(pdf['Total Volume']) * 0.20 +
-                to_percentile(pdf['Unique Depts']) * 0.10 +
+                to_percentile(pdf['Unique Depts']) * 0.05 +
                 to_percentile(pdf['Avg Rev/Test']) * 0.10 +
-                to_percentile(pdf['Histo Share (%)']) * 0.20
+                inv_histo_pctile * 0.20
             )
             
             pdf['Score'] = pdf['Score'].round(1)
