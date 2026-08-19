@@ -1218,9 +1218,9 @@ elif nav == "partners":
             pdf.loc[pdf['Score'] >= 65, 'Tier'] = 'Tier 1'
             pdf.loc[(pdf['Score'] < 65) & (pdf['Score'] >= 35), 'Tier'] = 'Tier 2'
             
-            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
-            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
-            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Growth Rate', 'Projected Volume (6M)', 'Tier']).reset_index(drop=True)
+            t1_df = pdf[pdf['Tier'] == 'Tier 1'].drop(columns=['Tier']).reset_index(drop=True)
+            t2_df = pdf[pdf['Tier'] == 'Tier 2'].drop(columns=['Tier']).reset_index(drop=True)
+            t3_df = pdf[pdf['Tier'] == 'Tier 3'].drop(columns=['Tier']).reset_index(drop=True)
             
             tab1, tab2, tab3 = st.tabs([f"🥇 Tier 1 (Elite) [{len(t1_df)}]", f"🥈 Tier 2 (Core) [{len(t2_df)}]", f"🥉 Tier 3 (Developing) [{len(t3_df)}]"])
             
