@@ -533,6 +533,9 @@ def load_data():
     lal_path_df = df[df['institution_name'] == 'Lal Path Labs'].copy()
     df = df[df['institution_name'] != 'Lal Path Labs']
     
+    # Completely remove METROPOLIS from all tables and dashboards
+    df = df[df['institution_name'] != 'METROPOLIS']
+    
     df['date'] = pd.to_datetime(df['report_month'], format='%B %Y', errors='coerce')
     df = df.dropna(subset=['date'])
     df = df.sort_values('date')
